@@ -150,6 +150,15 @@ HANDOVER.md                — This file
 
 ---
 
+## Next Session Priorities
+
+1. **Filter cleanup** — Remove "Breakfast" from the Food Type horizontal scroll (it duplicates the meal type tab). Add a "Halal-friendly" filter pill after Vegetarian in the dietary filters row. Add a right-edge fade indicator to the Food Type scroll so users can see there are more pills to scroll to. Remove the word "Halal" from all meal names in `meals-data.js` and `meals-breakfast.js` (e.g. "Halal Chicken Curry" → "Chicken Curry") — labels handle that signalling already.
+2. **Cook streak feature** — Track consecutive days the user cooks something and show a streak counter on the home screen.
+3. **Google Play Store** — Package the app as a PWA/TWA for submission to the Play Store.
+4. **Git repo cleanup** — Strip the 101MB `Git/` folder from commit history using BFG Repo Cleaner, then force-push to reduce repo size.
+
+---
+
 ## What Still Needs Building
 
 1. **Partner Mode** — Tips for partners/carers on how to help. How to offer choices, when to step in, what not to say. Likely a separate screen accessible from home.
@@ -217,4 +226,4 @@ Key themes that have shaped development:
 
 ---
 
-*Last updated: 5 May 2026 (session 2). For questions contact info4rh@gmail.com.*
+*Last updated: 5 May 2026 (final). For questions contact info4rh@gmail.com.*

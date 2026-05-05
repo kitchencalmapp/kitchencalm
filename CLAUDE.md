@@ -111,6 +111,15 @@ comments to code. Make the change, verify it, stop.
 
 ---
 
+## Prompt efficiency notes
+
+- When writing meal objects, keep steps arrays single-line (one string per step on one line) rather than multi-line
+- Do not read files not mentioned in the prompt
+- Make all changes in one pass
+- Do not add commentary or explanations after making changes
+
+---
+
 ## End of every session — mandatory, no exceptions
 
 When the task is complete, you MUST update `HANDOVER.md`. This is required
