@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e ' *)",
+      "Bash(node -e \"const d = require\\('./js/meals-data.js'\\); console.log\\('ok'\\)\")",
+      "WebSearch",
+      "WebFetch(domain:screensdesign.com)",
+      "WebFetch(domain:medium.com)",
+      "WebFetch(domain:blog.tubikstudio.com)",
+      "WebFetch(domain:www.focusbear.io)",
+      "Bash(npx --yes serve . --listen 3131)",
+      "Bash(curl -s http://localhost:3131)",
+      "Bash(node --input-type=commonjs)",
+      "Bash(node *)",
+      "Bash(git pull *)",
+      "Bash(git push *)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
+    ]
+  }
+}

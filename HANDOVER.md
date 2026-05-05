@@ -51,14 +51,14 @@ Kitchen Calm is a mobile-first web app that helps adults with ADHD get dinner (o
 - **Preferences remembered** — All filter/energy/portion/meal-type and accordion state saved to localStorage and restored on next visit.
 
 ### Meal library
-- **74 meals total** across low, medium, and high energy pools
+- **89 meals total** across low, medium, and high energy pools
 - **Dinner meals** — wide range across all energy levels including halal chicken, lamb, beef, fish, eggs, vegetarian, pasta, soups
 - **Breakfast meals** — 15 meals across all energy levels (in `meals-breakfast.js`)
-- **Lunch meals** — 15 meals across all energy levels; count shown on lunch tab correctly reflects actual lunch meals available
+- **Lunch meals** — 30 meals across all energy levels (5 per energy level added this session); count shown on lunch tab reflects actual lunch meals available
 - **10 new halal low-carb quick dinners** added to the low energy pool: Beef Lettuce Wrap Tacos, Garlic Butter Prawns & Courgetti, Spiced Chicken & Cucumber Salad, Tuna & Avocado Bowl, Beef Mince & Egg Scramble, Grilled Lamb Chops & Salad, Prawn & Avocado Lettuce Cups, Spiced Turkey Mince & Cauliflower Rice, Pan-Fried Salmon & Asparagus, Halal Chicken & Vegetable Omelette. All are ≤15 min, `lowCarb: true`, labelled halal, with full steps, ingredients, and rescueSteps.
 
 ### Pantry & shopping
-- **My Cupboard** — Tap to mark ingredients you have. Grouped by Fridge / Cupboard / Produce / Protein.
+- **My Cupboard** — Tap to mark ingredients you have. Grouped by Fridge / Cupboard / Produce / Protein. First-time visitors see a welcome banner ("What's in your cupboard?") explaining defaults; dismissible via "Got it" button which sets `kc_pantry_welcomed` flag.
 - **Meal readiness badges** — Meals show "Ready to cook" or "Missing N items" based on pantry.
 - **Shopping List** — Add missing ingredients from any recipe with one tap. Check off items while shopping. "Done shopping" updates pantry automatically.
 
@@ -73,6 +73,7 @@ Kitchen Calm is a mobile-first web app that helps adults with ADHD get dinner (o
 
 ### Onboarding & UX
 - **Onboarding overlay** — 3-slide carousel shown once to new users (skippable).
+- **App icon** — Single rising-steam design (one wavy amber line over a pot silhouette), replacing the previous three-steam version. Updated in both the home screen brand area and the onboarding slide 1.
 - **Desktop QR banner** — Shown on screens wider than 520px; dismissible. On wide desktop (≥900px): side card with camera hint, QR code, "This app works best on your phone" message, and numbered 3-step instructions. On mid-range (520px–899px): compact top banner with small QR image and short message; camera hint and steps are hidden at this size.
 - **Toast notifications** — Lightweight status messages (preferences saved, items added, looping back through meals, etc.).
 
@@ -145,6 +146,7 @@ HANDOVER.md                — This file
 | `kc_cook_uses` | Count of Cook Mode uses (paywall triggers at 3) |
 | `kc_onboardingDone` | Flag — onboarding not shown again |
 | `kc_desktopBannerDismissed` | Flag — QR banner not shown again |
+| `kc_pantry_welcomed` | Flag — Cupboard welcome banner not shown again |
 
 ---
 
@@ -215,4 +217,4 @@ Key themes that have shaped development:
 
 ---
 
-*Last updated: 5 May 2026. For questions contact info4rh@gmail.com.*
+*Last updated: 5 May 2026 (session 2). For questions contact info4rh@gmail.com.*

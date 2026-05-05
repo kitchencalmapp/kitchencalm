@@ -1629,8 +1629,19 @@ const App = (() => {
   };
 
   function _renderPantry() {
+    let welcomed = false;
+    try { welcomed = !!localStorage.getItem('kc_pantry_welcomed'); } catch(_) {}
     const owned = Pantry.getOwned();
     let html = '';
+    if (!welcomed) {
+      html += `
+        <div class="pantry-welcome-banner" id="pantry-welcome-banner">
+          <div class="pantry-welcome-icon">🧺</div>
+          <h2 class="pantry-welcome-title">What's in your cupboard?</h2>
+          <p class="pantry-welcome-desc">We've ticked the basics to get you started. Update the list to match what you actually have — the app will then show exactly what you can cook and what to buy.</p>
+          <button class="btn-pantry-welcome" onclick="App.dismissPantryWelcome()">Got it — let me update this →</button>
+        </div>`;
+    }
     Object.entries(PANTRY_ITEMS).forEach(([cat, items]) => {
       html += `<div class="pantry-section">
         <div class="pantry-section-label">${CATEGORY_LABELS[cat] || cat}</div>
@@ -1789,6 +1800,13 @@ const App = (() => {
     });
   }
 
+  // ── Pantry welcome ───────────────────────────────────────
+  function dismissPantryWelcome() {
+    try { localStorage.setItem('kc_pantry_welcomed', '1'); } catch(_) {}
+    const banner = document.getElementById('pantry-welcome-banner');
+    if (banner) banner.remove();
+  }
+
   // ── Coming soon ──────────────────────────────────────────────
 
   function comingSoon(title, icon, desc) {
@@ -1908,6 +1926,7 @@ const App = (() => {
     togglePantry, addToShopping,
     toggleShopItem, removeShopItem, doneShopping,
     saveInterruption, resumeCooking, clearInterruption,
+    dismissPantryWelcome,
     openFeedback, submitFeedback, toggleStar,
     toggleIngredient, resetIngredients,
     toggleStep,

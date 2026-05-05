@@ -130,3 +130,49 @@ update the date. Work through each item below explicitly:
 After updating HANDOVER.md, print a one-paragraph plain English summary of
 every file changed this session and what was changed. This becomes the
 handover note for the next session.
+
+## Meal object shape
+
+// KITCHEN CALM — MEAL OBJECT TEMPLATE
+// Copy this shape exactly for every new meal.
+{
+  id: 'kebab-case-unique-id',       // unique, never reuse
+  name: 'Display Name',
+  emoji: '🍳',
+  time: 20,                         // total minutes (prep + cook)
+  prepTime: 5,
+  cookTime: 15,
+  serves: 2,
+  tag: 'Short label',               // e.g. 'Cupboard staple', 'High protein'
+  mealType: 'dinner',               // 'breakfast' | 'lunch' | 'dinner'
+  labels: ['halal'],                // any of: 'halal','vegetarian','vegan'
+  description: 'One sentence. What it is and why it works.',
+  lowCarb: false,                   // true if no bread/pasta/rice/potato
+  grainFree: false,                 // true if no grains at all
+  cleanEating: false,               // true if whole foods, no processed
+  containsSugar: false,
+  naturallySweet: false,
+  cleanupScore: 'yellow',           // 'green'=1 pan | 'yellow'=2-3 | 'red'=4+
+  category: 'chicken',              // 'chicken'|'lamb-beef'|'fish-seafood'|
+                                    // 'eggs'|'vegetarian'|'pasta-rice'|
+                                    // 'soups-stews'|'breakfast'
+  ingredientIds: ['chicken-breast', 'rice', 'garlic'],  // IDs from pantry.js only
+  ingredients: ['2 chicken breasts', '180g rice', '2 cloves garlic, minced'],
+  steps: [
+    'Step one written as a full sentence.',
+    'Step two. Short, direct, no waffle.',
+    'Final step.'
+  ],
+  minSteps: [
+    'One-line summary of steps 1-2.',
+    'One-line summary of steps 3-4.',
+    'Final action.'
+  ],
+  rescueSteps: [       // exactly 5 entries, 3-5 words each, imperative
+    'Do the first thing',
+    'Do the second thing',
+    'Do the third thing',
+    'Do the fourth thing',
+    'Done'
+  ]
+}
