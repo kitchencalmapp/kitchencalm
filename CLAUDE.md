@@ -27,6 +27,7 @@ comments to code. Make the change, verify it, stop.
 - UK English throughout — "colour" not "color" in copy, "cupboard" not "cabinet"
 - All user-facing text: sentence case, never ALL CAPS, never Title Case
 - No emoji in code comments
+- Never include the word "Halal" in a meal name — halal status is shown via `labels: ['halal']` which renders as a chip on the card. The app is halal-first by design; the meal name should simply describe the dish (e.g. "Chicken Wrap" not "Halal Chicken Wrap")
 - CSS variables only for colours — never hardcode hex in new rules
 - Existing hex values (`#4D8B7A`, `#3A6E60` etc.) are only used where CSS variables
   don't exist yet — do not introduce new hardcoded hex values
@@ -146,7 +147,7 @@ handover note for the next session.
 // Copy this shape exactly for every new meal.
 {
   id: 'kebab-case-unique-id',       // unique, never reuse
-  name: 'Display Name',
+  name: 'Display Name',             // describe the dish only — never prefix with "Halal"
   emoji: '🍳',
   time: 20,                         // total minutes (prep + cook)
   prepTime: 5,

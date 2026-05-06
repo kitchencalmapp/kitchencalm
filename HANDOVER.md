@@ -152,6 +152,10 @@ HANDOVER.md                — This file
 
 ## Next Session Priorities
 
+> **Completed this session:** Paywall redesigned — triggers after first Cook Mode use (not third), counter no longer resets on dismiss, new sheet shows benefits list and £3.99/month pricing with 7-day trial CTA. Meal naming convention locked in CLAUDE.md — "Halal" prefix banned from all meal names going forward.
+
+
+
 1. **Cook streak feature** — Track consecutive days the user cooks something and show a streak counter on the home screen.
 2. **Google Play Store** — Package the app as a PWA/TWA for submission to the Play Store.
 3. **Git repo cleanup** — Strip the 101MB `Git/` folder from commit history using BFG Repo Cleaner, then force-push to reduce repo size.

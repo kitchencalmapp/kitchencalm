@@ -1111,7 +1111,7 @@ const App = (() => {
     if (!meal) return;
 
     const uses = parseInt(localStorage.getItem(COOK_USES_KEY) || '0');
-    if (uses >= 3) {
+    if (uses >= 1) {
       _showPaywall();
       return;
     }
@@ -1262,8 +1262,6 @@ const App = (() => {
   function paywallContinue() {
     const overlay = document.getElementById('paywall-overlay');
     if (overlay) overlay.setAttribute('hidden', '');
-    // Reset counter so they get more free uses
-    try { localStorage.setItem(COOK_USES_KEY, '0'); } catch(_) {}
     const meal = state.selectedMeal;
     if (meal) _enterCookMode(meal);
   }
