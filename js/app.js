@@ -1256,7 +1256,10 @@ const App = (() => {
   function paywallPro() {
     const overlay = document.getElementById('paywall-overlay');
     if (overlay) overlay.setAttribute('hidden', '');
-    comingSoon('Kitchen Calm Pro', '💚', 'Unlimited guided cooking, plus timers, rescue mode upgrades, and more.');
+    document.getElementById('waitlist-form').hidden    = false;
+    document.getElementById('waitlist-success').hidden = true;
+    document.getElementById('waitlist-error').hidden   = true;
+    go('waitlist');
   }
 
   function paywallContinue() {
@@ -1785,6 +1788,42 @@ const App = (() => {
     }
   }
 
+  async function submitWaitlist() {
+    const emailEl = document.getElementById('waitlist-email');
+    const btn     = document.querySelector('.btn-submit-waitlist');
+    const email   = emailEl ? emailEl.value.trim() : '';
+    if (!email || !email.includes('@')) {
+      emailEl.focus();
+      return;
+    }
+    btn.textContent = 'Joining…';
+    btn.disabled    = true;
+    const data = new FormData();
+    data.append('email',    email);
+    data.append('_subject', 'Kitchen Calm Pro — Waitlist signup');
+    data.append('source',   'pro-waitlist');
+    try {
+      const res = await fetch('https://formspree.io/f/xrejpoyg', {
+        method: 'POST',
+        body:   data,
+        headers: { 'Accept': 'application/json' }
+      });
+      if (!res.ok) throw new Error('bad response');
+      document.getElementById('waitlist-form').hidden    = true;
+      document.getElementById('waitlist-success').hidden = false;
+    } catch (_) {
+      document.getElementById('waitlist-form').hidden  = true;
+      document.getElementById('waitlist-error').hidden = false;
+      btn.textContent = 'Join the waitlist →';
+      btn.disabled    = false;
+    }
+  }
+
+  function retryWaitlist() {
+    document.getElementById('waitlist-form').hidden  = false;
+    document.getElementById('waitlist-error').hidden = true;
+  }
+
   function retryFeedback() {
     document.getElementById('feedback-form').hidden  = false;
     document.getElementById('feedback-error').hidden = true;
@@ -1931,7 +1970,7 @@ const App = (() => {
     // Cook mode
     startCookMode, exitCookMode, nextCookStep,
     cookModeAgain, exitCookToHome, rateCookMeal,
-    paywallPro, paywallContinue,
+    paywallPro, paywallContinue, submitWaitlist, retryWaitlist,
     // Timers
     startStepTimer, openTimer, closeTimerSheet,
     toggleActiveTimer, cancelActiveTimer,

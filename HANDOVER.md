@@ -66,6 +66,9 @@ Kitchen Calm is a mobile-first web app that helps adults with ADHD get dinner (o
 - **Cook it Again** — Last 3 cooked meals shown on home screen; "See all N meals" opens a full-screen history view (`screen-history`) with back button to home.
 - **Recipe ratings** — 1–5 stars on cook completion. Rating displayed on meal cards and history.
 
+### Monetisation
+- **Pro waitlist screen** — tapping "Start free trial →" on the paywall now goes to `screen-waitlist`. User enters email, submitted to Formspree with `source: pro-waitlist` tag to distinguish from feedback submissions. Success/error states match feedback screen pattern.
+
 ### Feedback (GDPR compliant)
 - **Formspree form** — Feedback POSTs to `https://formspree.io/f/xrejpoyg` via HTTPS. No email app opens. Fields: star rating, message, optional email, consent checkbox.
 - **GDPR consent** — Checkbox required before submit. If unticked: checkbox shakes and error message shows. Privacy notice at top of form ("Your feedback is private and only used to improve Kitchen Calm. We never share your data. 🔒").
@@ -132,6 +135,7 @@ HANDOVER.md                — This file
 | `shopping` | Shopping list |
 | `feedback` | GDPR feedback form (Formspree) with success/error states |
 | `history` | Full-screen all cooked meals list with back button |
+| `waitlist` | Pro waitlist email capture (success/error states) |
 | `soon` | Generic coming-soon placeholder |
 
 ### localStorage keys

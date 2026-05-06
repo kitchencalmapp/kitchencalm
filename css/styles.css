@@ -1738,6 +1738,56 @@ button:focus-visible {
 
 .btn-paywall-free:hover { background: var(--surface-2); }
 
+/* ── Waitlist screen ── */
+.waitlist-icon {
+  display: block;
+  font-size: 44px;
+  margin-bottom: 12px;
+}
+
+.waitlist-benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.waitlist-benefits li {
+  font-size: 15px;
+  color: var(--text-1);
+  font-weight: 500;
+}
+
+.waitlist-field {
+  margin-bottom: 12px;
+}
+
+.btn-submit-waitlist {
+  width: 100%;
+  padding: 14px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--r);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.btn-submit-waitlist:hover  { background: var(--primary-dark); }
+.btn-submit-waitlist:active { transform: scale(0.97); }
+
+.waitlist-privacy {
+  font-size: 12px;
+  color: var(--text-3);
+  text-align: center;
+  margin: 0;
+}
+
 /* ==============================
    COMING SOON SCREEN
    ============================== */

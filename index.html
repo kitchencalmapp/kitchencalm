@@ -383,6 +383,53 @@
     </div>
   </div>
 
+  <!-- ── Pro Waitlist ── -->
+  <div id="screen-waitlist" class="screen">
+    <div class="screen-header">
+      <button class="back-btn" onclick="App.go('home')">← Back</button>
+    </div>
+    <div class="screen-content">
+
+      <!-- Form state -->
+      <div id="waitlist-form">
+        <span class="waitlist-icon">⭐</span>
+        <h1 class="screen-title">Be first to get Pro</h1>
+        <p class="screen-sub">Leave your email and we'll let you know the moment Kitchen Calm Pro launches — with an exclusive early-bird price.</p>
+
+        <ul class="waitlist-benefits">
+          <li>✅ Unlimited guided Cook Mode</li>
+          <li>✅ Weekly meal planner</li>
+          <li>✅ Nutrition info per meal</li>
+          <li>✅ Always halal-verified meals</li>
+        </ul>
+
+        <div class="waitlist-field">
+          <input id="waitlist-email" class="feedback-input" type="email" placeholder="your@email.com" autocomplete="email">
+        </div>
+
+        <button class="btn-submit-waitlist" onclick="App.submitWaitlist()">Join the waitlist →</button>
+        <p class="waitlist-privacy">🔒 No spam. Just one email when Pro launches.</p>
+      </div>
+
+      <!-- Success state -->
+      <div id="waitlist-success" class="feedback-success" hidden>
+        <span class="feedback-state-emoji">💚</span>
+        <h2 class="feedback-state-title">You're on the list!</h2>
+        <p class="feedback-state-sub">We'll email you the moment Pro launches — with an early-bird price just for you.</p>
+        <button class="btn-feedback-home" onclick="App.go('home')">Back to cooking</button>
+      </div>
+
+      <!-- Error state -->
+      <div id="waitlist-error" class="feedback-error" hidden>
+        <span class="feedback-state-emoji">🤔</span>
+        <h2 class="feedback-state-title">Couldn't save your spot</h2>
+        <p class="feedback-state-sub">Something went wrong. Please try again.</p>
+        <button class="btn-feedback-home" onclick="App.retryWaitlist()">Try again</button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- COMING SOON -->
   <div id="screen-soon" class="screen">
     <div class="screen-header">
