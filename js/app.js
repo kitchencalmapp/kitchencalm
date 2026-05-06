@@ -190,8 +190,7 @@ const App = (() => {
     { key: 'eggs',        label: 'Eggs',           emoji: '🥚' },
     { key: 'vegetarian',  label: 'Vegetarian',     emoji: '🥗' },
     { key: 'pasta-rice',  label: 'Pasta & Rice',   emoji: '🍝' },
-    { key: 'soups-stews', label: 'Soups & Stews',  emoji: '🍲' },
-    { key: 'breakfast',   label: 'Breakfast',      emoji: '🍳' }
+    { key: 'soups-stews', label: 'Soups & Stews',  emoji: '🍲' }
   ];
 
   function _renderCategoryRow() {
@@ -230,6 +229,7 @@ const App = (() => {
       if (state.filters.has('clean-eating')    && !meal.cleanEating)                return false;
       if (state.filters.has('quick')           && meal.time >= 20)                  return false;
       if (state.filters.has('minimal-washing') && meal.cleanupScore !== 'green')    return false;
+      if (state.filters.has('halal-friendly')  && !(meal.labels && meal.labels.includes('halal'))) return false;
       if (state.prepFilter === 'no-prep'    && (meal.prepTime || 0) > 2)            return false;
       if (state.prepFilter === 'quick-prep' && (meal.prepTime || 0) > 5)            return false;
       if (state.prepFilter === 'some-prep'  && (meal.prepTime || 0) > 10)           return false;
@@ -317,7 +317,7 @@ const App = (() => {
     const names = [];
     const filterLabels = {
       'low-carb': 'Low Carb', 'grain-free': 'Grain Free',
-      'clean-eating': 'Clean', 'quick': 'Quick', 'minimal-washing': 'Easy wash'
+      'clean-eating': 'Clean', 'quick': 'Quick', 'minimal-washing': 'Easy wash', 'halal-friendly': 'Halal'
     };
     state.filters.forEach(key => {
       if (filterLabels[key]) names.push({ key: 'filter:' + key, label: filterLabels[key] });
@@ -1585,7 +1585,7 @@ const App = (() => {
     }
     if (name === 'filters') {
       const parts = [];
-      const fl = { 'low-carb': 'Low Carb', 'grain-free': 'Grain Free', 'clean-eating': 'Clean', 'quick': 'Quick', 'minimal-washing': 'Easy wash' };
+      const fl = { 'low-carb': 'Low Carb', 'grain-free': 'Grain Free', 'clean-eating': 'Clean', 'quick': 'Quick', 'minimal-washing': 'Easy wash', 'halal-friendly': 'Halal' };
       state.filters.forEach(k => { if (fl[k]) parts.push(fl[k]); });
       const pl = { 'no-prep': 'No prep', 'quick-prep': 'Quick prep', 'some-prep': 'Some prep' };
       if (state.prepFilter && pl[state.prepFilter]) parts.push(pl[state.prepFilter]);

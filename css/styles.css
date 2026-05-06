@@ -782,6 +782,8 @@ button:focus-visible {
   margin-bottom: 12px;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
+  mask-image: linear-gradient(to right, black calc(100% - 36px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black calc(100% - 36px), transparent 100%);
 }
 
 .category-row::-webkit-scrollbar { display: none; }

@@ -42,9 +42,9 @@ Kitchen Calm is a mobile-first web app that helps adults with ADHD get dinner (o
 - **Interruption recovery** — "I got interrupted" button saves current meal to localStorage. A resume card appears on the home screen next visit.
 
 ### Filtering & personalisation
-- **Dietary filters** — Low Carb, Grain Free, Clean, Quick (under 20 min), Easy wash (minimal washing up). All update the CTA count instantly on tap.
+- **Dietary filters** — Low Carb, Grain Free, Clean, Quick (under 20 min), Easy wash (minimal washing up), Halal (filters to meals labelled halal).
 - **Prep time filters** — No prep / Quick prep / Some prep.
-- **Food type categories** — Chicken, Lamb & Beef, Fish, Eggs, Vegetarian, Pasta & Rice, Soups & Stews, Breakfast (horizontal scroll pill row).
+- **Food type categories** — Chicken, Lamb & Beef, Fish, Eggs, Vegetarian, Pasta & Rice, Soups & Stews (horizontal scroll pill row, right-edge fade added).
 - **Portion size** — Just me / Two of us / Family (1×, 2×, 4×). Ingredients scale automatically including fractions.
 - **Smart filter relaxation** — When active filters return 1–2 results, meals are shown alongside a "Only X meal(s) match all your filters" banner with individual removable filter pills. When filters return 0 results, a helpful empty state shows removable pills — never a blank screen.
 - **Accordion subtitles** — When the Energy or Filters accordion is collapsed, a subtitle shows the active state at a glance ("— Low 🌙" or "— Low Carb · Quick").
@@ -152,10 +152,9 @@ HANDOVER.md                — This file
 
 ## Next Session Priorities
 
-1. **Filter cleanup** — Remove "Breakfast" from the Food Type horizontal scroll (it duplicates the meal type tab). Add a "Halal-friendly" filter pill after Vegetarian in the dietary filters row. Add a right-edge fade indicator to the Food Type scroll so users can see there are more pills to scroll to. Remove the word "Halal" from all meal names in `meals-data.js` and `meals-breakfast.js` (e.g. "Halal Chicken Curry" → "Chicken Curry") — labels handle that signalling already.
-2. **Cook streak feature** — Track consecutive days the user cooks something and show a streak counter on the home screen.
-3. **Google Play Store** — Package the app as a PWA/TWA for submission to the Play Store.
-4. **Git repo cleanup** — Strip the 101MB `Git/` folder from commit history using BFG Repo Cleaner, then force-push to reduce repo size.
+1. **Cook streak feature** — Track consecutive days the user cooks something and show a streak counter on the home screen.
+2. **Google Play Store** — Package the app as a PWA/TWA for submission to the Play Store.
+3. **Git repo cleanup** — Strip the 101MB `Git/` folder from commit history using BFG Repo Cleaner, then force-push to reduce repo size.
 
 ---
 

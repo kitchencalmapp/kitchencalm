@@ -15,7 +15,14 @@
       "Bash(git pull *)",
       "Bash(git push *)",
       "Bash(git add *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(cd /d \"E:\\\\Claude Project\")",
+      "Bash(Git\\\\cmd\\\\git.exe add *)",
+      "Bash(Git\\\\cmd\\\\git.exe commit *)",
+      "Bash(Git\\\\cmd\\\\git.exe push *)",
+      "Bash(Git/cmd/git.exe add *)",
+      "Bash(Git/cmd/git.exe commit *)",
+      "Bash(Git/cmd/git.exe push *)"
     ]
   }
 }

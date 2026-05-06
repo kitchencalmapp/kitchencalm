@@ -343,7 +343,7 @@
   const breakfastHigh = [
     {
       id: 'beef-sausage-omelette',
-      name: 'Halal Beef Sausage Omelette',
+      name: 'Beef Sausage Omelette',
       emoji: '🍳',
       time: 20, prepTime: 5, cookTime: 15, serves: 1,
       tag: 'High protein',
@@ -376,7 +376,7 @@
     },
     {
       id: 'halal-chicken-shakshuka',
-      name: 'Halal Chicken Shakshuka',
+      name: 'Chicken Shakshuka',
       emoji: '🍅',
       time: 25, prepTime: 8, cookTime: 17, serves: 2,
       tag: 'High protein',
@@ -413,7 +413,7 @@
     },
     {
       id: 'beef-bacon-egg-muffin',
-      name: 'Halal Beef Bacon & Egg Muffin',
+      name: 'Beef Bacon & Egg Muffin',
       emoji: '🥚',
       time: 15, prepTime: 3, cookTime: 12, serves: 1,
       tag: 'Weekend treat',
@@ -447,7 +447,7 @@
     },
     {
       id: 'spiced-lamb-hash',
-      name: 'Spiced Halal Lamb Hash',
+      name: 'Spiced Lamb Hash',
       emoji: '🥩',
       time: 30, prepTime: 8, cookTime: 22, serves: 2,
       tag: 'High protein',
@@ -484,7 +484,7 @@
     },
     {
       id: 'halal-mortadella-omelette',
-      name: 'Halal Mortadella Omelette',
+      name: 'Mortadella Omelette',
       emoji: '🍳',
       time: 15, prepTime: 5, cookTime: 10, serves: 1,
       tag: 'High protein',

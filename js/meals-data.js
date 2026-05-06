@@ -436,7 +436,7 @@ const MEALS = {
     },
     {
       id: 'greek-salad-chicken',
-      name: 'Greek Salad with Halal Chicken',
+      name: 'Greek Salad with Chicken',
       emoji: '🥗',
       time: 12, prepTime: 12, cookTime: 0, serves: 1,
       tag: 'No cooking',
@@ -691,7 +691,7 @@ const MEALS = {
     },
     {
       id: 'chicken-veg-omelette',
-      name: 'Halal Chicken & Vegetable Omelette',
+      name: 'Chicken & Vegetable Omelette',
       emoji: '🍳',
       time: 13, prepTime: 5, cookTime: 8, serves: 2,
       tag: 'High protein',
@@ -845,7 +845,7 @@ const MEALS = {
     },
     {
       id: 'halal-chicken-wrap',
-      name: 'Halal Chicken Wrap',
+      name: 'Chicken Wrap',
       emoji: '🌯',
       time: 20, prepTime: 5, cookTime: 15, serves: 2,
       tag: 'High protein',
@@ -1050,7 +1050,7 @@ const MEALS = {
     },
     {
       id: 'turkey-egg-wrap',
-      name: 'Halal Turkey & Egg Wrap',
+      name: 'Turkey & Egg Wrap',
       emoji: '🌯',
       time: 15, prepTime: 5, cookTime: 10, serves: 1,
       tag: 'High protein',
@@ -1282,7 +1282,7 @@ const MEALS = {
     // ── LUNCH (MEDIUM) ──
     {
       id: 'chicken-caesar-wrap',
-      name: 'Halal Chicken Caesar Wrap',
+      name: 'Chicken Caesar Wrap',
       emoji: '🌯',
       time: 20, prepTime: 5, cookTime: 15, serves: 2,
       tag: 'High protein',
@@ -1332,7 +1332,7 @@ const MEALS = {
     },
     {
       id: 'halal-beef-salad-wrap',
-      name: 'Halal Beef & Salad Wrap',
+      name: 'Beef & Salad Wrap',
       emoji: '🌯',
       time: 20, prepTime: 5, cookTime: 15, serves: 2,
       tag: 'Quick cook',
@@ -1463,7 +1463,7 @@ const MEALS = {
     },
     {
       id: 'halal-sausage-pasta',
-      name: 'Halal Sausage & Tomato Pasta',
+      name: 'Sausage & Tomato Pasta',
       emoji: '🍝',
       time: 20, prepTime: 5, cookTime: 15, serves: 2,
       tag: 'Family favourite',
@@ -1508,7 +1508,7 @@ const MEALS = {
     // ── DINNER ──
     {
       id: 'halal-chicken-stir-fry',
-      name: 'Halal Chicken Stir-fry',
+      name: 'Chicken Stir-fry',
       emoji: '🥘',
       time: 25, prepTime: 8, cookTime: 17, serves: 2,
       tag: 'Protein-packed',
@@ -1535,7 +1535,7 @@ const MEALS = {
     },
     {
       id: 'lamb-beef-tacos',
-      name: 'Halal Lamb or Beef Tacos',
+      name: 'Lamb or Beef Tacos',
       emoji: '🌮',
       time: 25, prepTime: 8, cookTime: 17, serves: 4,
       tag: 'Family favourite',
@@ -1667,7 +1667,7 @@ const MEALS = {
     // ── BREAKFAST (HIGH) ──
     {
       id: 'full-halal-fry-up',
-      name: 'Full Halal Fry Up',
+      name: 'Full Fry Up',
       emoji: '🍳',
       time: 25, prepTime: 5, cookTime: 20, serves: 2,
       tag: 'Weekend treat',
@@ -1744,7 +1744,7 @@ const MEALS = {
     },
     {
       id: 'chicken-omelette',
-      name: 'Halal Chicken Omelette',
+      name: 'Chicken Omelette',
       emoji: '🍳',
       time: 20, prepTime: 5, cookTime: 15, serves: 1,
       tag: 'High protein',
@@ -1982,7 +1982,7 @@ const MEALS = {
     // ── LUNCH (HIGH) ──
     {
       id: 'chicken-noodle-soup',
-      name: 'Halal Chicken Noodle Soup',
+      name: 'Chicken Noodle Soup',
       emoji: '🍜',
       time: 30, prepTime: 8, cookTime: 22, serves: 4,
       tag: 'Comforting',
@@ -2058,7 +2058,7 @@ const MEALS = {
     },
     {
       id: 'chicken-rice-bowl',
-      name: 'Halal Chicken & Rice Bowl',
+      name: 'Chicken & Rice Bowl',
       emoji: '🍚',
       time: 30, prepTime: 8, cookTime: 22, serves: 2,
       tag: 'Filling & balanced',
@@ -2083,7 +2083,7 @@ const MEALS = {
     },
     {
       id: 'halal-meatball-sub',
-      name: 'Halal Meatball Sub',
+      name: 'Meatball Sub',
       emoji: '🥖',
       time: 35, prepTime: 10, cookTime: 25, serves: 2,
       tag: 'Comfort food',
@@ -2147,7 +2147,7 @@ const MEALS = {
     },
     {
       id: 'beef-burrito-bowl',
-      name: 'Halal Beef Burrito Bowl',
+      name: 'Beef Burrito Bowl',
       emoji: '🌯',
       time: 25, prepTime: 5, cookTime: 20, serves: 2,
       tag: 'Protein-packed',
