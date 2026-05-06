@@ -91,7 +91,7 @@ Kitchen Calm is a mobile-first web app that helps adults with ADHD get dinner (o
 | CSS | Custom properties design system (`css/styles.css`) |
 | State | In-memory IIFE (`App`) + `localStorage` for persistence |
 | Font | Inter via Google Fonts |
-| Hosting | Netlify (static, no server-side code) |
+| Hosting | GitHub Pages (static, free, unlimited bandwidth). Domain kitchencalm.app managed via Spaceship DNS. Migrated from Netlify May 2026. |
 | Feedback | Formspree HTTPS POST (`formspree.io/f/xrejpoyg`) |
 | Analytics | Microsoft Clarity |
 | QR code | `api.qrserver.com` (external, desktop banner only) |
