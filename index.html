@@ -228,7 +228,24 @@
         <h1 id="meals-title" class="screen-title">Here are 3 ideas for you</h1>
       </div>
       <div id="category-row" class="category-row" role="group" aria-label="Food categories"></div>
+      <div class="meals-toolbar">
+        <select class="grid-sort" onchange="App.setSort(this.value)">
+          <option value="default">Sort: default</option>
+          <option value="quickest">Quickest first</option>
+          <option value="fewest-ingredients">Fewest ingredients</option>
+        </select>
+        <button class="btn-surprise" onclick="App.surpriseMe()">🎲 Surprise me</button>
+      </div>
+      <div class="grid-filters" role="group" aria-label="Filter meals">
+        <button class="filter-btn" data-grid-filter="quick"           onclick="App.toggleGridFilter('quick')">⚡ Quick</button>
+        <button class="filter-btn" data-grid-filter="minimal-washing" onclick="App.toggleGridFilter('minimal-washing')">🟢 Easy wash</button>
+        <button class="filter-btn" data-grid-filter="halal-friendly"  onclick="App.toggleGridFilter('halal-friendly')">🌙 Halal</button>
+        <button class="filter-btn" data-grid-filter="low-carb"        onclick="App.toggleGridFilter('low-carb')">Low Carb</button>
+        <button class="filter-btn" data-grid-filter="grain-free"      onclick="App.toggleGridFilter('grain-free')">Grain Free</button>
+        <button class="filter-btn" data-grid-filter="clean-eating"    onclick="App.toggleGridFilter('clean-eating')">Clean</button>
+      </div>
       <div id="meals-list" class="meals-stack" role="list"></div>
+      <button id="btn-show-more" class="btn-show-more" onclick="App.showMore()" hidden>Show more meals</button>
       <div id="meal-nav-row" class="meal-nav-row" hidden>
         <button id="btn-prev-meal" class="btn-prev-meal" onclick="App.previousMeal()">← Previous meal</button>
         <button id="btn-next-meal" class="btn-next-meal" onclick="App.nextMeal()">Next meal →</button>

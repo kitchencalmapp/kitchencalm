@@ -3,6 +3,8 @@
 const App = (() => {
   const state = {
     energy:             null,
+    visibleCount:       6,
+    sortBy:             'default',
     homeEnergy:         null,
     mealType:           'dinner',
     filters:            new Set(),
@@ -257,21 +259,13 @@ const App = (() => {
       return;
     }
 
-    state.pool          = filtered.length ? filtered : pool;
-    state.shuffleCount  = 0;
-    state.seenMealIds   = new Set();
-    state.mealHistory   = [];
-    state.mealHistoryIndex = -1;
-
-    // All energy levels: show 1 meal at a time with prev/next navigation
-    const initial = (level === 'low') ? _pickBestLow(state.pool)
-                                      : state.pool[Math.floor(Math.random() * state.pool.length)];
-    state.mealHistory      = [initial];
-    state.mealHistoryIndex = 0;
-    state.seenMealIds.add(initial.id);
-    _renderMeals([initial]);
+    state.pool         = filtered.length ? filtered : pool;
+    state.seenMealIds  = new Set();
+    state.visibleCount = 6;
+    _renderGrid();
     go('meals');
     _renderCategoryRow();
+    _syncGridFilterButtons();
 
     // Low-match banner: show when active filters leave only 1-2 results
     if (hasFilters && filtered.length > 0 && filtered.length < 3) {
@@ -389,6 +383,20 @@ const App = (() => {
 
   function shuffle() { nextMeal(); }
 
+  function surpriseMe() {
+    if (!state.pool || !state.pool.length) return;
+    const meal = state.pool[Math.floor(Math.random() * state.pool.length)];
+    const idx  = state.displayed.findIndex(m => m.id === meal.id);
+    if (idx >= 0) {
+      selectMeal(idx);
+    } else {
+      state.visibleCount = state.pool.length;
+      _renderGrid();
+      const newIdx = state.displayed.findIndex(m => m.id === meal.id);
+      selectMeal(newIdx >= 0 ? newIdx : 0);
+    }
+  }
+
   function nextMeal() {
     // Navigate forward in already-seen history
     if (state.mealHistoryIndex < state.mealHistory.length - 1) {
@@ -467,12 +475,91 @@ const App = (() => {
   }
 
   function heroCTA() {
+    state.activeCategory = null;
     if (state.homeEnergy) {
-      state.activeCategory = null;
       pickEnergy(state.homeEnergy);
     } else {
-      go('energy');
+      _showAllMeals();
     }
+  }
+
+  function _showAllMeals() {
+    state.energy = null;
+    let pool = [...(MEALS.low || []), ...(MEALS.medium || []), ...(MEALS.high || [])]
+      .filter(m => m.mealType === state.mealType);
+    if (pool.length === 0) {
+      pool = [...(MEALS.low || []), ...(MEALS.medium || []), ...(MEALS.high || [])]
+        .filter(m => m.mealType === 'dinner');
+    }
+    const filtered   = _applyFilters(pool);
+    const hasFilters = state.filters.size > 0 || state.prepFilter || state.activeCategory;
+    if (filtered.length === 0 && hasFilters) {
+      state.pool = pool;
+      go('meals');
+      _renderCategoryRow();
+      _renderEmptyFilterState();
+      return;
+    }
+    state.pool         = filtered.length ? filtered : pool;
+    state.seenMealIds  = new Set();
+    state.visibleCount = 6;
+    _renderGrid();
+    go('meals');
+    _renderCategoryRow();
+    _syncGridFilterButtons();
+  }
+
+  function _applySort(meals) {
+    if (state.sortBy === 'quickest') {
+      return [...meals].sort((a, b) => (a.time || 999) - (b.time || 999));
+    }
+    if (state.sortBy === 'fewest-ingredients') {
+      return [...meals].sort((a, b) => (a.ingredients ? a.ingredients.length : 0) - (b.ingredients ? b.ingredients.length : 0));
+    }
+    return [...meals];
+  }
+
+  function _renderGrid() {
+    const sorted   = _applySort(state.pool);
+    const visible  = sorted.slice(0, state.visibleCount);
+    _renderMeals(visible);
+    const showMoreBtn = document.getElementById('btn-show-more');
+    if (showMoreBtn) {
+      if (visible.length < sorted.length) {
+        const remaining       = sorted.length - visible.length;
+        const next            = Math.min(6, remaining);
+        showMoreBtn.textContent = `Show ${next} more meal${next !== 1 ? 's' : ''} (${remaining} remaining)`;
+        showMoreBtn.hidden    = false;
+      } else {
+        showMoreBtn.hidden = true;
+      }
+    }
+  }
+
+  function showMore() {
+    state.visibleCount += 6;
+    _renderGrid();
+  }
+
+  function setSort(key) {
+    state.sortBy       = key;
+    state.visibleCount = 6;
+    _renderGrid();
+  }
+
+  function toggleGridFilter(key) {
+    if (state.filters.has(key)) state.filters.delete(key);
+    else                        state.filters.add(key);
+    state.visibleCount = 6;
+    if (state.energy) pickEnergy(state.energy);
+    else              _showAllMeals();
+  }
+
+  function _syncGridFilterButtons() {
+    document.querySelectorAll('[data-grid-filter]').forEach(btn => {
+      const key = btn.getAttribute('data-grid-filter');
+      btn.classList.toggle('active', state.filters.has(key));
+    });
   }
 
   function _syncEnergyWidget() {
@@ -759,19 +846,21 @@ const App = (() => {
       medium: { label: '🌤 Medium Energy', cls: 'medium' },
       high:   { label: '⚡ High Energy',   cls: 'high'   }
     };
-    const chip   = chipConfig[state.energy] || chipConfig.medium;
     const chipEl = document.getElementById('energy-chip');
-    chipEl.textContent = chip.label;
-    chipEl.className   = 'energy-chip ' + chip.cls;
+    if (state.energy && chipEl) {
+      const chip = chipConfig[state.energy] || chipConfig.medium;
+      chipEl.textContent = chip.label;
+      chipEl.className   = 'energy-chip ' + chip.cls;
+      chipEl.hidden      = false;
+    } else if (chipEl) {
+      chipEl.hidden = true;
+    }
 
     const titleEl = document.getElementById('meals-title');
     if (titleEl) {
-      if (state.energy === 'low') {
-        titleEl.textContent = 'Here\'s your easiest option 💚';
-      } else {
-        const mealWord = state.mealType === 'breakfast' ? 'breakfast' : state.mealType === 'lunch' ? 'lunch' : 'dinner';
-        titleEl.textContent = `Here's a ${mealWord} idea for you`;
-      }
+      const mealWord = state.mealType === 'breakfast' ? 'breakfast' : state.mealType === 'lunch' ? 'lunch' : 'dinner';
+      const total    = state.pool ? state.pool.length : meals.length;
+      titleEl.textContent = `${total} ${mealWord} meal${total !== 1 ? 's' : ''} to choose from`;
     }
 
     // Always hide batch-shuffle button; always show prev/next nav
@@ -780,7 +869,7 @@ const App = (() => {
 
 
     const navRow = document.getElementById('meal-nav-row');
-    if (navRow) navRow.hidden = false;
+    if (navRow) navRow.hidden = true;
 
     const atFirst = state.mealHistoryIndex <= 0;
     const prevBtn = document.getElementById('btn-prev-meal');
@@ -1552,7 +1641,7 @@ const App = (() => {
   }
 
   function toggleAccordion(name) {
-    const current = _loadAccordionState() || { energy: false, filters: false };
+    const current = _loadAccordionState() || { energy: false, filters: true };
     current[name] = !current[name];
     _saveAccordionState(current);
     _applyOneAccordion(name, current[name], true);
@@ -1956,7 +2045,7 @@ const App = (() => {
 
   return {
     go, leaveRecipe,
-    pickEnergy, shuffle, selectMeal, comingSoon, cookAgain,
+    pickEnergy, shuffle, surpriseMe, showMore, setSort, toggleGridFilter, selectMeal, comingSoon, cookAgain,
     setHomeEnergy, heroCTA, setMealType,
     toggleFilter, setPrepFilter, setPortionSize,
     setCategory, clearAllFilters,

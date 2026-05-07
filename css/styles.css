@@ -818,6 +818,64 @@ button:focus-visible {
 /* Meal cards */
 .meals-stack { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
 
+.meals-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.grid-sort {
+  background: var(--surface-2);
+  color: var(--text-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 7px 10px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-surprise {
+  background: var(--primary-light);
+  color: var(--primary);
+  border: none;
+  border-radius: 20px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.1s;
+}
+
+.btn-surprise:hover  { background: var(--primary); color: #fff; }
+.btn-surprise:active { transform: scale(0.96); }
+
+.grid-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.btn-show-more {
+  width: 100%;
+  padding: 12px;
+  background: var(--surface-2);
+  color: var(--primary);
+  border: 1px dashed var(--primary);
+  border-radius: var(--r);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 6px;
+  margin-bottom: 18px;
+}
+
+.btn-show-more:hover  { background: var(--primary-light); }
+.btn-show-more:active { transform: scale(0.99); }
+
 .meal-card {
   background: var(--surface);
   border-radius: var(--r-lg);
