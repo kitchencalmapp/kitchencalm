@@ -383,6 +383,23 @@ const App = (() => {
 
   function shuffle() { nextMeal(); }
 
+  function surpriseMeFromHome() {
+    let pool = [...(MEALS.low || []), ...(MEALS.medium || []), ...(MEALS.high || [])]
+      .filter(m => m.mealType === state.mealType);
+    if (pool.length === 0) {
+      pool = [...(MEALS.low || []), ...(MEALS.medium || []), ...(MEALS.high || [])]
+        .filter(m => m.mealType === 'dinner');
+    }
+    const filtered  = _applyFilters(pool);
+    state.pool      = filtered.length ? filtered : pool;
+    state.seenMealIds = new Set();
+    state.visibleCount = state.pool.length;
+    const meal      = state.pool[Math.floor(Math.random() * state.pool.length)];
+    state.displayed = [meal];
+    state.selectedMeal = meal;
+    selectMeal(0);
+  }
+
   function surpriseMe() {
     if (!state.pool || !state.pool.length) return;
     const meal = state.pool[Math.floor(Math.random() * state.pool.length)];
@@ -2045,7 +2062,7 @@ const App = (() => {
 
   return {
     go, leaveRecipe,
-    pickEnergy, shuffle, surpriseMe, showMore, setSort, toggleGridFilter, selectMeal, comingSoon, cookAgain,
+    pickEnergy, shuffle, surpriseMe, surpriseMeFromHome, showMore, setSort, toggleGridFilter, selectMeal, comingSoon, cookAgain,
     setHomeEnergy, heroCTA, setMealType,
     toggleFilter, setPrepFilter, setPortionSize,
     setCategory, clearAllFilters,
