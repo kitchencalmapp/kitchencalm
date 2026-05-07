@@ -172,6 +172,7 @@ const App = (() => {
     _updateHeroCTA();
     _updateAccordionSubtitles();
     if (state.energy) pickEnergy(state.energy);
+    else              _showAllMeals();
   }
 
   function _syncCategories() {
