@@ -990,23 +990,31 @@ const App = (() => {
       const rating     = _loadRating(meal.id);
       const ratingHtml = rating ? `<div class="meal-card-rating">${'★'.repeat(rating)}${'☆'.repeat(5-rating)}</div>` : '';
 
+      const hasImg = meal.mealType === 'dinner';
+      const imgHtml = hasImg
+        ? `<div class="meal-img-wrap"><img class="meal-img" src="images/${meal.id}.webp" loading="lazy" decoding="async" alt="${_escape(meal.name)}" onerror="this.closest('.meal-img-wrap').style.display='none'"></div>`
+        : '';
+
       return `
       <article class="meal-card" role="listitem">
-        ${badgeHtml}
-        ${ratingHtml}
-        <div class="meal-head">
-          <span class="meal-emoji" aria-hidden="true">${meal.emoji}</span>
-          <div class="meal-details">
-            <div class="meal-name">${_escape(meal.name)}</div>
-            <div class="meal-chips">
-              ${prepChip}${cookChip}${servesChip}${cleanupBadge}${sweetBadge}${dietChips}${filterChips.join('')}
+        ${imgHtml}
+        <div class="meal-card-body">
+          ${badgeHtml}
+          ${ratingHtml}
+          <div class="meal-head">
+            <span class="meal-emoji" aria-hidden="true">${meal.emoji}</span>
+            <div class="meal-details">
+              <div class="meal-name">${_escape(meal.name)}</div>
+              <div class="meal-chips">
+                ${prepChip}${cookChip}${servesChip}${cleanupBadge}${sweetBadge}${dietChips}${filterChips.join('')}
+              </div>
             </div>
           </div>
+          <p class="meal-desc">${_escape(meal.description)}</p>
+          <button class="btn-cook" onclick="App.selectMeal(${i})" aria-label="Cook ${_escape(meal.name)}">
+            Let's make this →
+          </button>
         </div>
-        <p class="meal-desc">${_escape(meal.description)}</p>
-        <button class="btn-cook" onclick="App.selectMeal(${i})" aria-label="Cook ${_escape(meal.name)}">
-          Let's make this →
-        </button>
       </article>`;
     }).join('');
   }

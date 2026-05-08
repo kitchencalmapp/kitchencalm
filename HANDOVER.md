@@ -156,6 +156,10 @@ HANDOVER.md                — This file
 
 ## Next Session Priorities
 
+> **Completed this session:** Food photography added for all 44 dinner meals. AI-generated 1:1 images converted from PNG to WebP (98MB → 2.6MB, avg 58KB each). Images stored in /images/ folder. Meal cards updated with full-bleed 4:3 image at top, card body wrapped in .meal-card-body. onerror fallback hides image wrap if file missing — safe for lunch/breakfast meals with no images yet. Lunch and breakfast images pending.
+
+
+
 > **Completed this session:** Major UX refactor — meal discovery rebuilt to match successful apps (Mealime, Cookpad, Yummly pattern). Replaced one-at-a-time random shuffle with scrollable grid view. Removed forced energy gate (no-energy users now see all meals). Added 🎲 Surprise me button, sort options (Quickest / Fewest ingredients), inline filter pills on grid screen, and "Show 6, then more" pagination to protect against overwhelm. Filters accordion now open by default on home screen for new users. Resolves drop-off identified in Microsoft Clarity sessions where users shuffled through 14 meals before leaving. Food photography (next biggest UX gap) deferred to a dedicated session.
 
 
