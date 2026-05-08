@@ -992,7 +992,7 @@ const App = (() => {
 
       const hasImg = meal.mealType === 'dinner';
       const imgHtml = hasImg
-        ? `<div class="meal-img-wrap"><img class="meal-img" src="images/${meal.id}.webp" loading="lazy" decoding="async" alt="${_escape(meal.name)}" onerror="this.closest('.meal-img-wrap').style.display='none'"></div>`
+        ? `<div class="meal-img-wrap"><img class="meal-img" src="Images/${meal.id}.webp" loading="lazy" decoding="async" alt="${_escape(meal.name)}" onerror="this.closest('.meal-img-wrap').style.display='none'"></div>`
         : '';
 
       return `

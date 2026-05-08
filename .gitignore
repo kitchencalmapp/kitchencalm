@@ -1,2 +1,7 @@
 Git/
 .claude/
+Images.rar
+*.rar
+*.zip
+images/*.png
+Images/*.png
