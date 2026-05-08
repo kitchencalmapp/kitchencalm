@@ -175,6 +175,34 @@ const App = (() => {
     else              _showAllMeals();
   }
 
+  function filterMealGrid(cat) {
+    if (!cat || cat === 'all') {
+      state.activeCategory = null;
+    } else {
+      state.activeCategory = (state.activeCategory === cat) ? null : cat;
+    }
+    state.visibleCount = 6;
+    _renderCategoryRow();
+    // Always rebuild from all energy buckets so category filter shows all matches
+    let pool = [...(MEALS.low || []), ...(MEALS.medium || []), ...(MEALS.high || [])]
+      .filter(m => m.mealType === state.mealType);
+    if (pool.length === 0) {
+      pool = [...(MEALS.low || []), ...(MEALS.medium || []), ...(MEALS.high || [])]
+        .filter(m => m.mealType === 'dinner');
+    }
+    const filtered = _applyFilters(pool);
+    const hasFilters = state.filters.size > 0 || state.prepFilter || state.activeCategory;
+    if (filtered.length === 0 && hasFilters) {
+      state.pool = pool;
+      _renderEmptyFilterState();
+      return;
+    }
+    state.pool = filtered.length ? filtered : pool;
+    state.seenMealIds = new Set();
+    _renderGrid();
+    _syncGridFilterButtons();
+  }
+
   function _syncCategories() {
     document.querySelectorAll('.category-pill').forEach(pill => {
       const cat = pill.dataset.category;
@@ -207,11 +235,12 @@ const App = (() => {
   function _renderCategoryRowInto(id) {
     const row = document.getElementById(id);
     if (!row) return;
+    const handler = id === 'home-category-row' ? 'App.setCategory' : 'App.filterMealGrid';
     row.innerHTML = CATEGORIES.map(c => {
       const isActive = c.key === 'all' ? !state.activeCategory : state.activeCategory === c.key;
       return `<button class="category-pill${isActive ? ' active' : ''}"
               data-category="${c.key}"
-              onclick="App.setCategory('${c.key}')"
+              onclick="${handler}('${c.key}')"
               aria-pressed="${isActive}">
         <span>${c.emoji}</span>${c.label}
       </button>`;
@@ -878,7 +907,9 @@ const App = (() => {
     if (titleEl) {
       const mealWord = state.mealType === 'breakfast' ? 'breakfast' : state.mealType === 'lunch' ? 'lunch' : 'dinner';
       const total    = state.pool ? state.pool.length : meals.length;
-      titleEl.textContent = `${total} ${mealWord} meal${total !== 1 ? 's' : ''} to choose from`;
+      const cat      = state.activeCategory ? CATEGORIES.find(c => c.key === state.activeCategory) : null;
+      const catLabel = cat ? ` · ${cat.emoji} ${cat.label}` : '';
+      titleEl.textContent = `${total} ${mealWord} meal${total !== 1 ? 's' : ''}${catLabel}`;
     }
 
     // Always hide batch-shuffle button; always show prev/next nav
@@ -2066,7 +2097,7 @@ const App = (() => {
     pickEnergy, shuffle, surpriseMe, surpriseMeFromHome, showMore, setSort, toggleGridFilter, selectMeal, comingSoon, cookAgain,
     setHomeEnergy, heroCTA, setMealType,
     toggleFilter, setPrepFilter, setPortionSize,
-    setCategory, clearAllFilters,
+    setCategory, filterMealGrid, clearAllFilters,
     togglePantry, addToShopping,
     toggleShopItem, removeShopItem, doneShopping,
     saveInterruption, resumeCooking, clearInterruption,
