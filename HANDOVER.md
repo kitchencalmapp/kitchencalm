@@ -148,6 +148,7 @@ HANDOVER.md                — This file
 | `kc_ratings` | Map of mealId → star rating (1–5) |
 | `kc_interrupted` | In-progress meal id, energy, name, emoji |
 | `kc_cook_uses` | Count of Cook Mode uses (paywall triggers at 3) |
+| `kc_streak` | `{ count: number, lastDate: 'YYYY-MM-DD' }` | Cook streak — forgiving (miss 1 day freezes, miss 2 resets) |
 | `kc_onboardingDone` | Flag — onboarding not shown again |
 | `kc_desktopBannerDismissed` | Flag — QR banner not shown again |
 | `kc_pantry_welcomed` | Flag — Cupboard welcome banner not shown again |
@@ -155,6 +156,10 @@ HANDOVER.md                — This file
 ---
 
 ## Next Session Priorities
+
+> **Completed this session:** Cook streak feature added. Forgiving streak logic: consecutive days increment, 1 missed day freezes (no reset), 2+ missed days resets to 1. Streak stored in kc_streak as { count, lastDate }. Badge shown on home screen and on cook completion screen. _renderStreakBadge() called on init and on exitCookToHome.
+
+
 
 > **Completed this session:** Lunch meal images added (30 of 30 now complete including prawn-avocado-rice-bowl). Tuna & Avocado Bowl image updated to show tinned tuna. Two duplicate meals removed: egg-fried-rice (dinner duplicate — lunch version kept) and pb-banana-rice-cakes (lunch duplicate — breakfast version kept). Total meal count reduced by 2.
 

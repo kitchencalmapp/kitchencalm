@@ -1251,6 +1251,44 @@ const App = (() => {
   // ── COOK MODE ─────────────────────────────────────────────────
 
   const COOK_USES_KEY = 'kc_cook_uses';
+  const STREAK_KEY    = 'kc_streak';
+
+  function _loadStreak() {
+    try { return JSON.parse(localStorage.getItem(STREAK_KEY)) || { count: 0, lastDate: null }; }
+    catch (_) { return { count: 0, lastDate: null }; }
+  }
+
+  function _saveStreak(data) {
+    try { localStorage.setItem(STREAK_KEY, JSON.stringify(data)); } catch (_) {}
+  }
+
+  function _updateStreak() {
+    const today = new Date().toISOString().slice(0, 10);
+    const s     = _loadStreak();
+    if (s.lastDate === today) return s;
+    const days  = s.lastDate
+      ? Math.round((new Date(today) - new Date(s.lastDate)) / 86400000)
+      : 999;
+    const count = days === 1 ? s.count + 1 : days === 2 ? s.count : 1;
+    const updated = { count, lastDate: today };
+    _saveStreak(updated);
+    return updated;
+  }
+
+  function _renderStreakBadge() {
+    const el = document.getElementById('streak-badge');
+    if (!el) return;
+    const s = _loadStreak();
+    if (s.count >= 1) {
+      const msg = s.count === 1
+        ? '🔥 1 day streak — cook again tomorrow to keep it going'
+        : `🔥 ${s.count} day streak — keep it up!`;
+      el.textContent = msg;
+      el.hidden = false;
+    } else {
+      el.hidden = true;
+    }
+  }
 
   function startCookMode() {
     const meal = state.selectedMeal;
@@ -1339,6 +1377,12 @@ const App = (() => {
   function _showCookCompletion() {
     const meal   = state.cookMode.meal;
     const rating = _loadRating(meal ? meal.id : '');
+    const streak = _updateStreak();
+    const streakHtml = streak.count >= 2
+      ? `<div class="cook-streak-badge">🔥 ${streak.count} day streak!</div>`
+      : streak.count === 1
+      ? `<div class="cook-streak-badge">🔥 Streak started — cook again tomorrow!</div>`
+      : '';
 
     const body = document.getElementById('cook-body');
     if (body) {
@@ -1346,6 +1390,7 @@ const App = (() => {
         <div class="cook-completion">
           <span class="cook-complete-emoji">🎉</span>
           <h2 class="cook-complete-title">You did it!</h2>
+          ${streakHtml}
           <p class="cook-complete-sub">Dinner is served.</p>
           <div class="cook-rating">
             <div class="cook-rating-label">How did it go?</div>
@@ -1388,6 +1433,7 @@ const App = (() => {
   }
 
   function exitCookToHome() {
+    _renderStreakBadge();
     _cancelAllTimers();
     go('home');
   }
@@ -2081,6 +2127,7 @@ const App = (() => {
   // ── Init ─────────────────────────────────────────────────────
 
   Pantry.load();
+  _renderStreakBadge();
   _loadHistory();
   _loadInterrupted();
   const _prefsRestored = _loadPrefs();

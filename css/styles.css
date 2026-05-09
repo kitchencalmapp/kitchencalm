@@ -856,6 +856,29 @@ button:focus-visible {
 .btn-surprise-full:hover  { background: var(--primary); color: #fff; }
 .btn-surprise-full:active { transform: scale(0.98); }
 
+.streak-badge {
+  display: block;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary);
+  background: var(--primary-light);
+  border-radius: 20px;
+  padding: 8px 16px;
+  margin-bottom: 10px;
+}
+
+.cook-streak-badge {
+  display: inline-block;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--primary);
+  background: var(--primary-light);
+  border-radius: 20px;
+  padding: 6px 16px;
+  margin-bottom: 12px;
+}
+
 .btn-hero-surprise {
   display: block;
   width: 100%;
