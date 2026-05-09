@@ -160,7 +160,7 @@ HANDOVER.md                — This file
 
 
 
-> **Completed this session:** Food photography added for all 44 dinner meals. AI-generated 1:1 images converted from PNG to WebP (98MB → 2.6MB, avg 58KB each). Images stored in /images/ folder. Meal cards updated with full-bleed 4:3 image at top, card body wrapped in .meal-card-body. onerror fallback hides image wrap if file missing — safe for lunch/breakfast meals with no images yet. Lunch and breakfast images pending.
+> **Completed this session:** Food photography now live across all 103 meals (44 dinner, 30 lunch, 29 breakfast). One breakfast image pending: boiled-eggs-cucumber — to be generated and added to Images/ with no code changes needed.
 
 
 
