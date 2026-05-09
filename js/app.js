@@ -990,7 +990,7 @@ const App = (() => {
       const rating     = _loadRating(meal.id);
       const ratingHtml = rating ? `<div class="meal-card-rating">${'★'.repeat(rating)}${'☆'.repeat(5-rating)}</div>` : '';
 
-      const hasImg = meal.mealType === 'dinner';
+      const hasImg = meal.mealType === 'dinner' || meal.mealType === 'lunch';
       const imgHtml = hasImg
         ? `<div class="meal-img-wrap"><img class="meal-img" src="Images/${meal.id}.webp" loading="lazy" decoding="async" alt="${_escape(meal.name)}" onerror="this.closest('.meal-img-wrap').style.display='none'"></div>`
         : '';

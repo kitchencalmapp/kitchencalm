@@ -736,24 +736,6 @@ const MEALS = {
       rescueSteps: ['Lay tortilla flat', 'Spread hummus on it', 'Add any veg you have', 'Roll it up', 'Done']
     },
     {
-      id: 'pb-banana-rice-cakes',
-      name: 'Peanut Butter & Banana Rice Cakes',
-      emoji: '🍌',
-      time: 3, prepTime: 3, cookTime: 0, serves: 1,
-      tag: 'No cook',
-      mealType: 'lunch',
-      labels: ['vegetarian', 'halal'],
-      description: 'A quick, filling lunch when energy is low and hunger is real.',
-      lowCarb: false, grainFree: true, cleanEating: false, containsSugar: false, naturallySweet: true,
-      cleanupScore: 'green',
-      category: 'vegetarian',
-      ingredientIds: ['rice-cakes', 'peanut-butter', 'banana', 'honey'],
-      ingredients: ['4 rice cakes', '4 tbsp peanut butter', '1 banana, sliced', '1 tsp honey (optional)'],
-      steps: ['Spread 1 tbsp peanut butter on each rice cake.', 'Slice the banana and lay the pieces on top.', 'Drizzle with a little honey if you like.', 'Done.'],
-      minSteps: ['Spread peanut butter on rice cakes.', 'Add banana slices.', 'Eat.'],
-      rescueSteps: ['Get out rice cakes', 'Spread peanut butter', 'Slice banana on top', 'Drizzle honey', 'Done']
-    },
-    {
       id: 'cheese-tomato-toastie',
       name: 'Cheese & Tomato Toastie',
       emoji: '🫓',
@@ -920,31 +902,6 @@ const MEALS = {
       ],
       minSteps: ['Warm canned beans, mash slightly.', 'Layer on tortilla with cheese and salsa.', 'Roll up and eat.'],
       rescueSteps: ['Warm beans in pan', 'Mash roughly with fork', 'Warm tortilla briefly', 'Add beans and cheese', 'Roll up and eat']
-    },
-    {
-      id: 'egg-fried-rice',
-      name: 'Egg Fried Rice',
-      emoji: '🍳',
-      time: 15, prepTime: 3, cookTime: 12, serves: 2,
-      tag: 'Leftover magic',
-      mealType: 'dinner',
-      labels: ['vegetarian', 'halal'],
-      description: 'Day-old rice transforms into a fast, filling meal.',
-      lowCarb: false, grainFree: false, cleanEating: false, containsSugar: false, naturallySweet: false,
-      cleanupScore: 'yellow',
-      category: 'eggs',
-      ingredientIds: ['rice', 'eggs', 'soy-sauce', 'oil'],
-      ingredients: ['2 cups cooked rice (day-old is ideal)', '2 eggs', '2 tbsp soy sauce', '1 tbsp oil', 'Optional: frozen peas, spring onion'],
-      steps: [
-        'Heat 1 tbsp oil in a large pan over high heat until shimmering.',
-        'Add 2 cups cooked rice. Spread flat and leave it alone for 2 minutes to get crispy.',
-        'Stir the rice, then push it to one side of the pan.',
-        'Crack both 2 eggs into the empty space. Scramble them quickly.',
-        'Once the eggs are just set, fold them through the rice.',
-        'Add 2 tbsp soy sauce. Stir everything together.'
-      ],
-      minSteps: ['Fry rice in hot pan, don\'t stir for 2 min.', 'Push to side, scramble 2 eggs.', 'Mix together, add soy sauce.'],
-      rescueSteps: ['Hot oil in pan', 'Rice flat, no stirring', 'Push rice to side', 'Scramble two eggs', 'Mix with soy sauce']
     },
     {
       id: 'spiced-chickpeas',

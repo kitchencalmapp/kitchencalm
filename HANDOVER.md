@@ -156,6 +156,10 @@ HANDOVER.md                — This file
 
 ## Next Session Priorities
 
+> **Completed this session:** Lunch meal images added (30 of 30 now complete including prawn-avocado-rice-bowl). Tuna & Avocado Bowl image updated to show tinned tuna. Two duplicate meals removed: egg-fried-rice (dinner duplicate — lunch version kept) and pb-banana-rice-cakes (lunch duplicate — breakfast version kept). Total meal count reduced by 2.
+
+
+
 > **Completed this session:** Food photography added for all 44 dinner meals. AI-generated 1:1 images converted from PNG to WebP (98MB → 2.6MB, avg 58KB each). Images stored in /images/ folder. Meal cards updated with full-bleed 4:3 image at top, card body wrapped in .meal-card-body. onerror fallback hides image wrap if file missing — safe for lunch/breakfast meals with no images yet. Lunch and breakfast images pending.
 
 
