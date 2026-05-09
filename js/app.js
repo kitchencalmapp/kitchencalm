@@ -1391,7 +1391,7 @@ const App = (() => {
           <span class="cook-complete-emoji">🎉</span>
           <h2 class="cook-complete-title">You did it!</h2>
           ${streakHtml}
-          <p class="cook-complete-sub">Dinner is served.</p>
+          <p class="cook-complete-sub">${state.mealType === 'breakfast' ? 'Breakfast is served.' : state.mealType === 'lunch' ? 'Lunch is served.' : 'Dinner is served.'}</p>
           <div class="cook-rating">
             <div class="cook-rating-label">How did it go?</div>
             <div class="cook-rating-stars">
