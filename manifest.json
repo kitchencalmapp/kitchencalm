@@ -10,6 +10,22 @@
   "id": "/",
   "lang": "en-GB",
   "categories": ["food", "health", "lifestyle"],
+  "screenshots": [
+    {
+      "src": "screenshots/screenshot-home.webp",
+      "sizes": "1079x1918",
+      "type": "image/webp",
+      "form_factor": "narrow",
+      "label": "Kitchen Calm home screen — energy selector and meal filters"
+    },
+    {
+      "src": "screenshots/screenshot-meals.webp",
+      "sizes": "1073x1907",
+      "type": "image/webp",
+      "form_factor": "narrow",
+      "label": "Kitchen Calm meal grid — halal-verified meals with photos"
+    }
+  ],
   "icons": [
     { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
