@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "app.kitchencalm",
+        "sha256_cert_fingerprints": ["8D:C1:63:92:A1:2E:9D:54:CD:2E:B7:F8:BE:71:FA:12:4F:5A:64:52:AD:16:2F:C3:E0:37:EB:DB:96:E2:F7:AE"]
+      }
+    }]
