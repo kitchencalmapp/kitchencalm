@@ -109,6 +109,9 @@ comments to code. Make the change, verify it, stop.
 2. Nutrition estimates — calories/macros per meal object
 3. Cloud sync / accounts — prerequisite for Pro tier
 4. Cupboard onboarding — first-run prompt to set pantry defaults
+5. Adjustable serving sizes — scale ingredient quantities up/down from the recipe screen (1, 2, 4, 6 servings). Meals currently hardcode serves field. UI: stepper or segmented control on recipe screen, multiply all ingredient quantities accordingly.
+6. Share shopping list — native share sheet for the shopping list contents (plain text format). Pro feature.
+7. New meals badge — show a "New" indicator on the meal type tab or home screen when meals have been added since last visit. Track via localStorage timestamp vs meal data version.
 
 ---
 

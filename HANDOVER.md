@@ -157,6 +157,8 @@ HANDOVER.md                — This file
 
 ## Next Session Priorities
 
+> **Action needed:** Change Google Play age rating from 18+ to 12+ — competitor research shows Doctor's Kitchen (9+) and Kitchen Stories (12+) both serve younger users. Teenagers in halal households cook regularly. 18+ is unnecessarily restrictive.
+
 > **Completed this session:** PWA setup complete. manifest.json and sw.js added to project root. Icons at icons/icon-192.png and icons/icon-512.png. App now installable via "Add to Home Screen" on Android Chrome/Brave and iOS Safari. Service worker caches shell files for offline support. Ready for Samsung Galaxy Store and Amazon Appstore submission.
 
 
@@ -180,7 +182,13 @@ HANDOVER.md                — This file
 
 
 
-1. **Cook streak feature** — Track consecutive days the user cooks something and show a streak counter on the home screen.
+1. **Adjustable serving sizes** — scale recipe ingredients for 1, 2, 4 or 6 people. Quick build, high user value. Both Doctor's Kitchen and Kitchen Stories have this.
+2. **New meals badge** — show "New" indicator when meals added since last visit. Easy re-engagement mechanic.
+3. **Google Play Store closed testing** — need 12 testers opted in for 14 days before production access. Share opt-in link in halal community groups.
+4. **Share shopping list** — native share sheet for shopping list. Pro feature.
+5. **Weekly meal planner** — Pro feature, strongest subscription justification.
+6. **Nutrition estimates** — calories/macros per meal. Pro feature.
+7. **Git repo cleanup** — strip 101MB Git/ folder from history using BFG Repo Cleaner. — Track consecutive days the user cooks something and show a streak counter on the home screen.
 2. **Google Play Store** — Package the app as a PWA/TWA for submission to the Play Store.
 3. **Git repo cleanup** — Strip the 101MB `Git/` folder from commit history using BFG Repo Cleaner, then force-push to reduce repo size.
 
