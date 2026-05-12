@@ -155,32 +155,105 @@ HANDOVER.md                — This file
 
 ---
 
+---
+
+## Session Summary — 11–12 May 2026
+
+### Code changes shipped this session
+
+**PWA setup (manifest, service worker, icons)**
+- `manifest.json` added to project root — name, short_name, description, theme_color (#4D8B7A), background_color (#F7F5F0), orientation portrait, display standalone, id "/", lang "en-GB", categories, screenshots
+- `sw.js` added — cache-first for shell files, network-first for images, activates and claims immediately
+- `icons/icon-192.png` and `icons/icon-512.png` generated from the Kitchen Calm SVG logo
+- `screenshots/screenshot-home.webp` and `screenshots/screenshot-meals.webp` added for PWA install prompt
+- `index.html` updated — manifest link, apple PWA meta tags, service worker registration before </body>
+- App is now installable via "Add to Home Screen" on Android and iOS
+
+**assetlinks.json / domain verification**
+- `.well-known/assetlinks.json` added — required for Google Play Store domain verification
+- `_config.yml` added — forces GitHub Pages to serve `.well-known/` directory (exclude: Git/, .claude/)
+- Live and verified at `https://kitchencalm.app/.well-known/assetlinks.json`
+
+**Privacy policy**
+- `privacy.html` added to project root
+- Live at `https://kitchencalm.app/privacy.html`
+- Covers: localStorage only data, Formspree feedback, Microsoft Clarity analytics, no cookies, user rights
+
+**Food photography**
+- 104 AI-generated meal images (DALL-E 3, 1:1 square, consistent style)
+- Converted from PNG to WebP, optimised to avg ~58KB each (from ~2MB PNG)
+- Stored in `/Images/` folder (capital I — case sensitive on GitHub Pages Linux server)
+- Image path in app.js: `src="Images/${meal.id}.webp"`
+- All three meal types enabled: dinner, lunch, breakfast
+- `onerror` fallback hides image wrap if file missing
+
+**Grid view refactor (major UX change)**
+- Replaced one-at-a-time random meal shuffle with scrollable card grid
+- Energy level gate removed — no energy selected = show all meals from all energy buckets
+- `state.visibleCount` = 6 initially, +6 on "Show more"
+- `state.sortBy` = 'default' | 'quickest' | 'fewest-ingredients'
+- `_renderGrid()` wrapper handles sort + slice + show more button
+- `filterMealGrid(cat)` — dedicated function for meals-screen category pills (bypasses home-screen UI updates, always rebuilds from all energy buckets)
+- Inline filter pills on meals screen (Quick, Easy wash, Halal, Low Carb, Grain Free, Clean)
+- 🎲 Surprise me — full-width dashed button on grid screen, ghost button on home screen
+- `surpriseMeFromHome()` — builds pool and goes directly to random meal
+
+**Cook streak**
+- `kc_streak` localStorage key: `{ count: number, lastDate: 'YYYY-MM-DD' }`
+- Forgiving logic: consecutive days increment, 1 missed day freezes (no reset), 2+ missed days resets to 1
+- `_updateStreak()` called on cook completion
+- `_renderStreakBadge()` called on init and `exitCookToHome()`
+- Badge shown on home screen above hero CTA and on cook completion screen
+
+**Cook completion copy fix**
+- "Dinner is served." now dynamically reads state.mealType — shows "Breakfast is served." / "Lunch is served." / "Dinner is served." correctly
+
+**Competitor research (Doctor's Kitchen, Kitchen Stories)**
+- Both have adjustable serving sizes, new recipe badges, share shopping list
+- Both rated 9+/12+ — KitchenCalm 18+ is unnecessarily restrictive, change to 12+
+- KitchenCalm differentiators: halal-first, ADHD-friendly energy matching, Cook Mode simplicity
+
+---
+
+### Google Play Store — current status
+
+**Completed:**
+- PWABuilder package generated (`Kitchen Calm.aab` version code 1, package `app.kitchencalm`)
+- `signing.keystore` saved at `C:\Users\Surface4\Documents\KitchenCalm Keys\`
+- `signing-key-info.txt` saved in same folder
+- `assetlinks.json` live at `https://kitchencalm.app/.well-known/assetlinks.json`
+- Play Console account created (kitchencalmapp@gmail.com, personal account, $25 paid)
+- App created: package `app.kitchencalm`, app name `Kitchen Calm`
+- Internal testing release uploaded (version 1.0.0, version code 1)
+- Store settings: Food & drink category, tags Recipe/Food & drink/Lifestyle
+- Privacy policy set: `https://kitchencalm.app/privacy.html`
+- Age rating set to 18+ (CHANGE TO 12+ — action needed)
+- Data safety: Email address (optional, developer comms) + App interactions (required, analytics, shared with Microsoft Clarity)
+
+**Still needed to complete store listing:**
+- Default store listing: upload icon, feature graphic, 5 screenshots, app name, short description, full description
+- Content rating questionnaire (submit new)
+- Ads declaration (No ads)
+- Data safety questionnaire (complete)
+- App category confirm (Food & drink)
+
+**Closed testing (required before production):**
+- Need new AAB with version code 2 (version code 1 already used by internal testing)
+- Generate via PWABuilder: version 1.0.1, version code 2, use existing signing.keystore
+- Need 12 testers opted in for minimum 14 days
+- Countries: United Kingdom
+- Share opt-in link in halal Facebook groups and WhatsApp communities
+
+**Graphics prepared (saved in outputs):**
+- `icon-512-playstore.png` — 512×512 app icon
+- `feature-graphic.png` — 1024×500 feature banner
+- `screenshot-1-home.jpg` through `screenshot-5-filters.jpg` — 5 phone screenshots
+
+---
+
 ## Next Session Priorities
 
-> **Action needed:** Change Google Play age rating from 18+ to 12+ — competitor research shows Doctor's Kitchen (9+) and Kitchen Stories (12+) both serve younger users. Teenagers in halal households cook regularly. 18+ is unnecessarily restrictive.
-
-> **Completed this session:** PWA setup complete. manifest.json and sw.js added to project root. Icons at icons/icon-192.png and icons/icon-512.png. App now installable via "Add to Home Screen" on Android Chrome/Brave and iOS Safari. Service worker caches shell files for offline support. Ready for Samsung Galaxy Store and Amazon Appstore submission.
-
-
-> **Completed this session:** Cook streak feature added. Forgiving streak logic: consecutive days increment, 1 missed day freezes (no reset), 2+ missed days resets to 1. Streak stored in kc_streak as { count, lastDate }. Badge shown on home screen and on cook completion screen. _renderStreakBadge() called on init and on exitCookToHome.
-
-
-
-> **Completed this session:** Lunch meal images added (30 of 30 now complete including prawn-avocado-rice-bowl). Tuna & Avocado Bowl image updated to show tinned tuna. Two duplicate meals removed: egg-fried-rice (dinner duplicate — lunch version kept) and pb-banana-rice-cakes (lunch duplicate — breakfast version kept). Total meal count reduced by 2.
-
-
-
-> **Completed this session:** Food photography now live across all 103 meals (44 dinner, 30 lunch, 29 breakfast). One breakfast image pending: boiled-eggs-cucumber — to be generated and added to Images/ with no code changes needed.
-
-
-
-> **Completed this session:** Major UX refactor — meal discovery rebuilt to match successful apps (Mealime, Cookpad, Yummly pattern). Replaced one-at-a-time random shuffle with scrollable grid view. Removed forced energy gate (no-energy users now see all meals). Added 🎲 Surprise me button, sort options (Quickest / Fewest ingredients), inline filter pills on grid screen, and "Show 6, then more" pagination to protect against overwhelm. Filters accordion now open by default on home screen for new users. Resolves drop-off identified in Microsoft Clarity sessions where users shuffled through 14 meals before leaving. Food photography (next biggest UX gap) deferred to a dedicated session.
-
-
-
-> **Completed this session:** Paywall redesigned — triggers after first Cook Mode use (not third), counter no longer resets on dismiss, new sheet shows benefits list and £3.99/month pricing with 7-day trial CTA. Meal naming convention locked in CLAUDE.md — "Halal" prefix banned from all meal names going forward.
-
-
+> **Action needed before next session:** Change Google Play age rating from 18+ to 12+ in App content → Target audience. Generate new AAB (version code 2) via PWABuilder using existing keystore.
 
 1. **Adjustable serving sizes** — scale recipe ingredients for 1, 2, 4 or 6 people. Quick build, high user value. Both Doctor's Kitchen and Kitchen Stories have this.
 2. **New meals badge** — show "New" indicator when meals added since last visit. Easy re-engagement mechanic.
@@ -188,9 +261,7 @@ HANDOVER.md                — This file
 4. **Share shopping list** — native share sheet for shopping list. Pro feature.
 5. **Weekly meal planner** — Pro feature, strongest subscription justification.
 6. **Nutrition estimates** — calories/macros per meal. Pro feature.
-7. **Git repo cleanup** — strip 101MB Git/ folder from history using BFG Repo Cleaner. — Track consecutive days the user cooks something and show a streak counter on the home screen.
-2. **Google Play Store** — Package the app as a PWA/TWA for submission to the Play Store.
-3. **Git repo cleanup** — Strip the 101MB `Git/` folder from commit history using BFG Repo Cleaner, then force-push to reduce repo size.
+7. **Git repo cleanup** — strip 101MB Git/ folder from history using BFG Repo Cleaner.
 
 ---
 
