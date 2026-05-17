@@ -466,6 +466,101 @@
     .hero, .features, .story { animation: fadeUp 0.5s ease both; }
     .features { animation-delay: 0.1s; }
     .story { animation-delay: 0.2s; }
+
+    /* ── DESKTOP LAYOUT ── */
+    @media (min-width: 768px) {
+      nav {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 24px 48px;
+      }
+
+      .hero {
+        max-width: 1100px;
+        padding: 60px 48px 48px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto;
+        gap: 0 60px;
+        align-items: center;
+      }
+
+      .beta-pill {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      h1 {
+        grid-column: 1;
+        grid-row: 2;
+        font-size: clamp(42px, 4vw, 64px);
+        margin-bottom: 20px;
+      }
+
+      .hero-sub {
+        grid-column: 1;
+        grid-row: 3;
+        font-size: 18px;
+        margin-bottom: 0;
+      }
+
+      .phone-wrap {
+        grid-column: 2;
+        grid-row: 1 / 4;
+        max-width: 280px;
+        margin: 0 auto;
+      }
+
+      .features {
+        max-width: 1100px;
+        padding: 48px 48px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 48px;
+      }
+
+      .feature-row {
+        border-bottom: 1px solid var(--cream-dark);
+      }
+
+      .form-section {
+        padding: 60px 48px;
+      }
+
+      .form-inner {
+        max-width: 560px;
+      }
+
+      .form-heading {
+        font-size: 36px;
+      }
+
+      .story {
+        padding: 48px;
+      }
+
+      .story-inner {
+        max-width: 1100px;
+        padding: 0 0;
+      }
+
+      .story-quote {
+        font-size: 24px;
+        max-width: 700px;
+      }
+
+      .social-proof {
+        max-width: 1100px;
+        padding: 32px 48px;
+      }
+
+      footer {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 24px 48px;
+        text-align: left;
+      }
+    }
   </style>
 </head>
 <body>
