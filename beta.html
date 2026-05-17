@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kitchen Calm — Join the Beta</title>
+  <meta name="description" content="Be one of the first to try Kitchen Calm. Free access. Halal meals matched to your energy level.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-dark: #1b4d35;
+      --green-mid: #2d6a4f;
+      --green-btn: #2d6a4f;
+      --green-light: #d8ead2;
+      --cream: #f5f0e8;
+      --cream-dark: #ede7d9;
+      --text-dark: #1a2e20;
+      --text-mid: #3d5a45;
+      --text-light: #6b8f72;
+      --white: #ffffff;
+      --accent: #e8a838;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text-dark);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 18px 24px;
+      background: var(--cream);
+    }
+
+    .nav-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--white);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    .nav-name {
+      font-family: 'Fraunces', serif;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--green-dark);
+    }
+
+    .nav-tag {
+      font-size: 12px;
+      color: var(--text-light);
+      margin-top: 1px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 40px 24px 32px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .beta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--green-light);
+      color: var(--green-dark);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+    }
+
+    .beta-pill::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--green-mid);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    h1 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(38px, 10vw, 52px);
+      font-weight: 700;
+      line-height: 1.05;
+      color: var(--green-dark);
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--green-mid);
+    }
+
+    .hero-sub {
+      font-size: 17px;
+      line-height: 1.55;
+      color: var(--text-mid);
+      margin-bottom: 32px;
+    }
+
+    /* ── PHONE MOCKUP ── */
+    .phone-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 300px;
+      margin: 0 auto 36px;
+    }
+
+    .phone-frame {
+      background: #1a1a1a;
+      border-radius: 36px;
+      padding: 14px;
+      box-shadow:
+        0 40px 80px rgba(0,0,0,0.25),
+        0 0 0 1px rgba(255,255,255,0.05) inset;
+    }
+
+    .phone-screen {
+      background: var(--cream);
+      border-radius: 26px;
+      overflow: hidden;
+    }
+
+    .phone-meal-img {
+      width: 100%;
+      height: 140px;
+      background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+    }
+
+    .phone-content {
+      padding: 14px;
+    }
+
+    .phone-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #e8f5e9;
+      color: var(--green-mid);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 100px;
+      margin-bottom: 8px;
+    }
+
+    .phone-meal-name {
+      font-family: 'Fraunces', serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+    }
+
+    .phone-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 12px;
+    }
+
+    .phone-tag {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 100px;
+      border: 1px solid var(--cream-dark);
+      color: var(--text-mid);
+    }
+
+    .phone-tag.halal { background: #e8f5e9; border-color: #c8e6c9; color: var(--green-mid); }
+
+    .phone-cta {
+      width: 100%;
+      background: var(--green-btn);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 11px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+    }
+
+    /* ── FEATURES ── */
+    .features {
+      padding: 0 24px 36px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .feature-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--cream-dark);
+    }
+
+    .feature-row:last-child { border-bottom: none; }
+
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--green-light);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .feature-title {
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--text-dark);
+      margin-bottom: 2px;
+    }
+
+    .feature-desc {
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.45;
+    }
+
+    /* ── FORM SECTION ── */
+    .form-section {
+      background: var(--green-dark);
+      padding: 40px 24px;
+      margin: 0;
+    }
+
+    .form-inner {
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .form-eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--green-light);
+      margin-bottom: 10px;
+    }
+
+    .form-heading {
+      font-family: 'Fraunces', serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.15;
+      margin-bottom: 8px;
+    }
+
+    .form-sub {
+      font-size: 14px;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 15px 18px;
+      border-radius: 14px;
+      border: 1.5px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.08);
+      color: var(--white);
+      font-size: 16px;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+      -webkit-appearance: none;
+    }
+
+    .form-input::placeholder { color: rgba(255,255,255,0.35); }
+
+    .form-input:focus {
+      border-color: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.12);
+    }
+
+    .form-btn {
+      width: 100%;
+      padding: 16px;
+      border-radius: 14px;
+      border: none;
+      background: var(--accent);
+      color: var(--text-dark);
+      font-size: 16px;
+      font-weight: 700;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: transform 0.15s, opacity 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .form-btn:active { transform: scale(0.98); opacity: 0.9; }
+    .form-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .form-note {
+      text-align: center;
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+      margin-top: 14px;
+    }
+
+    /* ── SUCCESS STATE ── */
+    .success-state {
+      display: none;
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin: 0 auto 16px;
+    }
+
+    .success-title {
+      font-family: 'Fraunces', serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+
+    .success-msg {
+      font-size: 15px;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.5;
+    }
+
+    /* ── SOCIAL PROOF ── */
+    .social-proof {
+      padding: 28px 24px;
+      max-width: 480px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .proof-text {
+      font-size: 13px;
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .proof-dot {
+      width: 3px;
+      height: 3px;
+      background: var(--text-light);
+      border-radius: 50%;
+    }
+
+    /* ── STORY SECTION ── */
+    .story {
+      background: var(--cream-dark);
+      padding: 36px 24px;
+    }
+
+    .story-inner {
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .story-quote {
+      font-family: 'Fraunces', serif;
+      font-size: 20px;
+      font-style: italic;
+      color: var(--green-dark);
+      line-height: 1.45;
+      margin-bottom: 16px;
+      position: relative;
+      padding-left: 20px;
+    }
+
+    .story-quote::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 4px;
+      bottom: 4px;
+      width: 3px;
+      background: var(--green-mid);
+      border-radius: 2px;
+    }
+
+    .story-attr {
+      font-size: 13px;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 20px 24px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    footer a { color: var(--text-light); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero, .features, .story { animation: fadeUp 0.5s ease both; }
+    .features { animation-delay: 0.1s; }
+    .story { animation-delay: 0.2s; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-icon">🍲</div>
+    <div>
+      <div class="nav-name">Kitchen Calm</div>
+      <div class="nav-tag">One step at a time</div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="beta-pill">Beta Access — Android</div>
+
+    <h1>Can't decide what's for <em>dinner?</em></h1>
+
+    <p class="hero-sub">
+      Kitchen Calm matches meals to your energy level — Low, Medium or High — and walks you through cooking one step at a time. All meals are halal-verified.
+    </p>
+
+    <!-- Phone mockup -->
+    <div class="phone-wrap">
+      <div class="phone-frame">
+        <div class="phone-screen">
+          <div class="phone-meal-img">🥗</div>
+          <div class="phone-content">
+            <div class="phone-badge">✓ Ready to cook</div>
+            <div class="phone-meal-name">Greek Salad with Chicken</div>
+            <div class="phone-tags">
+              <span class="phone-tag">✂️ 12m prep</span>
+              <span class="phone-tag">👥 Serves 1</span>
+              <span class="phone-tag halal">✓ Halal</span>
+              <span class="phone-tag">Low carb</span>
+            </div>
+            <button class="phone-cta">Let's make this →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features">
+    <div class="feature-row">
+      <div class="feature-icon">⚡</div>
+      <div>
+        <div class="feature-title">Matched to your energy</div>
+        <div class="feature-desc">Pick Low, Medium or High and get a meal you can actually make right now.</div>
+      </div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-icon">👣</div>
+      <div>
+        <div class="feature-title">One step at a time</div>
+        <div class="feature-desc">Cook Mode guides you through each step with built-in timers. No scrolling, no overwhelm.</div>
+      </div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-icon">🆘</div>
+      <div>
+        <div class="feature-title">Rescue Mode</div>
+        <div class="feature-desc">Completely overwhelmed? Rescue Mode strips everything back to 3–5 word steps in giant text.</div>
+      </div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-icon">☪️</div>
+      <div>
+        <div class="feature-title">Halal by default</div>
+        <div class="feature-desc">Every meal is halal-verified. No filtering needed. Built for halal households in the UK.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STORY -->
+  <section class="story">
+    <div class="story-inner">
+      <p class="story-quote">"I built this for my wife. Dinner time was becoming one of the most stressful parts of our evening. She suggested it might help others — and here we are."</p>
+      <p class="story-attr">— Rashid, founder of Kitchen Calm</p>
+    </div>
+  </section>
+
+  <!-- FORM -->
+  <section class="form-section" id="signup">
+    <div class="form-inner">
+
+      <!-- Form state -->
+      <div id="form-state">
+        <p class="form-eyebrow">Free Beta Access</p>
+        <h2 class="form-heading">Get free access to the app</h2>
+        <p class="form-sub">Enter your email and I'll send you everything you need to install Kitchen Calm on Android. No faff, no steps — just one link.</p>
+
+        <form id="beta-form">
+          <div class="form-group">
+            <input
+              class="form-input"
+              type="text"
+              name="name"
+              placeholder="Your first name"
+              required
+              autocomplete="given-name"
+            >
+            <input
+              class="form-input"
+              type="email"
+              name="email"
+              placeholder="Your email address"
+              required
+              autocomplete="email"
+              inputmode="email"
+            >
+          </div>
+          <button class="form-btn" type="submit" id="submit-btn">
+            <span id="btn-text">Get free beta access →</span>
+          </button>
+        </form>
+
+        <p class="form-note">Android only · Free · No account needed · Your email is never shared</p>
+      </div>
+
+      <!-- Success state -->
+      <div class="success-state" id="success-state">
+        <div class="success-icon">✅</div>
+        <p class="success-title">You're on the list!</p>
+        <p class="success-msg">I'll send your install link within 24 hours. JazakAllah khayran for your support 🤲</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SOCIAL PROOF -->
+  <div class="social-proof">
+    <p class="proof-text">
+      <span>🍃 Free</span>
+      <span class="proof-dot"></span>
+      <span>No account needed</span>
+      <span class="proof-dot"></span>
+      <span>100+ halal meals</span>
+      <span class="proof-dot"></span>
+      <span>Android</span>
+    </p>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <a href="https://kitchencalm.app/privacy.html">Privacy policy</a> · © 2026 Kitchen Calm
+  </footer>
+
+  <script>
+    const form = document.getElementById('beta-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const btnText = document.getElementById('btn-text');
+    const formState = document.getElementById('form-state');
+    const successState = document.getElementById('success-state');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = form.querySelector('[name="name"]').value.trim();
+      const email = form.querySelector('[name="email"]').value.trim();
+
+      if (!name || !email) return;
+
+      submitBtn.disabled = true;
+      btnText.textContent = 'Sending...';
+
+      try {
+        const res = await fetch('https://formspree.io/f/xrejpoyg', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            name,
+            email,
+            source: 'beta-signup',
+            _subject: `New beta signup: ${name}`
+          })
+        });
+
+        if (res.ok) {
+          formState.style.display = 'none';
+          successState.style.display = 'block';
+          successState.style.animation = 'fadeUp 0.4s ease both';
+        } else {
+          throw new Error('Form error');
+        }
+      } catch {
+        btnText.textContent = 'Something went wrong — try again';
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+
+</body>
+</html>
