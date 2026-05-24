@@ -3,420 +3,691 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kitchen Calm — Join the Beta</title>
+  <title>Kitchen Calm — Free Beta Access</title>
   <meta name="description" content="Free halal cooking app matched to your energy level. Join the beta today.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --green-dark: #1b4d35;
-      --green-mid: #2d6a4f;
-      --green-light: #d8ead2;
-      --cream: #f5f0e8;
-      --cream-dark: #ede7d9;
-      --text-dark: #1a2e20;
-      --text-mid: #3d5a45;
-      --text-light: #6b8f72;
+      --forest: #1a4731;
+      --forest-deep: #122e20;
+      --forest-mid: #2a6044;
+      --sage: #4a8c64;
+      --mint: #c8e6d4;
+      --cream: #f7f2ea;
+      --cream-mid: #ede6d8;
+      --cream-dark: #e0d8c8;
+      --sand: #c9a96e;
+      --text: #1a2e20;
+      --text-mid: #3d5a47;
+      --text-soft: #7a9484;
       --white: #ffffff;
-      --accent: #e8a838;
+      --radius: 16px;
+      --shadow: 0 8px 40px rgba(26,71,49,0.15);
     }
 
     html { scroll-behavior: smooth; }
 
     body {
       font-family: 'DM Sans', sans-serif;
-      background: var(--green-dark);
+      font-optical-sizing: auto;
+      background: var(--forest);
       color: var(--white);
       min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
     }
 
     /* ── NAV ── */
+    .nav-wrap { border-bottom: 1px solid rgba(255,255,255,0.08); }
+
     nav {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 16px 24px;
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 16px 24px;
-      max-width: 1100px;
-      margin: 0 auto;
+      gap: 12px;
     }
 
-    .nav-icon {
-      width: 34px; height: 34px;
-      background: rgba(255,255,255,0.12);
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
-    }
-
-    .nav-name {
-      font-family: 'Fraunces', serif;
-      font-size: 16px; font-weight: 600;
-      color: var(--white);
-    }
-
-    .nav-tag { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 1px; }
-
-    /* ── HERO + FORM COMBINED ── */
-    .top-section {
-      background: var(--green-dark);
-      padding: 8px 24px 48px;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .beta-pill {
-      display: inline-flex; align-items: center; gap: 6px;
+    .nav-logo {
+      width: 38px; height: 38px;
       background: rgba(255,255,255,0.1);
-      color: rgba(255,255,255,0.85);
-      font-size: 11px; font-weight: 600;
-      letter-spacing: 0.06em; text-transform: uppercase;
-      padding: 4px 12px; border-radius: 100px;
-      margin-bottom: 16px;
-    }
-
-    .beta-pill::before {
-      content: ''; width: 6px; height: 6px;
-      background: #4ade80; border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.8); }
-    }
-
-    h1 {
-      font-family: 'Fraunces', serif;
-      font-size: clamp(32px, 8vw, 52px);
-      font-weight: 700; line-height: 1.05;
-      color: var(--white);
-      margin-bottom: 12px;
-      letter-spacing: -0.02em;
-    }
-
-    h1 em { font-style: italic; color: #86efac; }
-
-    .hero-sub {
-      font-size: 16px; line-height: 1.55;
-      color: rgba(255,255,255,0.65);
-      margin-bottom: 28px;
-      max-width: 480px;
-    }
-
-    /* ── FORM (above fold) ── */
-    .form-card {
-      background: var(--white);
-      border-radius: 20px;
-      padding: 24px;
-      max-width: 480px;
-    }
-
-    .form-card-title {
-      font-family: 'Fraunces', serif;
-      font-size: 18px; font-weight: 700;
-      color: var(--text-dark);
-      margin-bottom: 4px;
-    }
-
-    .form-card-sub {
-      font-size: 13px; color: var(--text-light);
-      margin-bottom: 16px; line-height: 1.45;
-    }
-
-    .form-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
-
-    .form-input {
-      width: 100%; padding: 13px 16px;
-      border-radius: 12px;
-      border: 1.5px solid var(--cream-dark);
-      background: var(--cream);
-      color: var(--text-dark);
-      font-size: 16px; font-family: 'DM Sans', sans-serif;
-      outline: none;
-      transition: border-color 0.2s;
-      -webkit-appearance: none;
-    }
-
-    .form-input::placeholder { color: #aab5ad; }
-    .form-input:focus { border-color: var(--green-mid); background: var(--white); }
-
-    .form-btn {
-      width: 100%; padding: 14px;
-      border-radius: 12px; border: none;
-      background: var(--green-dark);
-      color: var(--white);
-      font-size: 16px; font-weight: 700;
-      font-family: 'DM Sans', sans-serif;
-      cursor: pointer;
-      transition: transform 0.15s, opacity 0.15s;
-    }
-
-    .form-btn:active { transform: scale(0.98); opacity: 0.9; }
-    .form-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    .form-note {
-      text-align: center; font-size: 11px;
-      color: var(--text-light); margin-top: 10px;
-    }
-
-    /* ── SUCCESS ── */
-    .success-state { display: none; text-align: center; padding: 16px 0; }
-
-    .success-icon {
-      width: 56px; height: 56px;
-      background: var(--green-light);
-      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 11px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 28px; margin: 0 auto 12px;
+      font-size: 19px;
+      flex-shrink: 0;
     }
 
-    .success-title {
-      font-family: 'Fraunces', serif;
-      font-size: 20px; font-weight: 700;
-      color: var(--text-dark); margin-bottom: 6px;
+    .nav-text-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px; font-weight: 600;
+      color: var(--white);
+      letter-spacing: -0.01em;
     }
 
-    .success-msg { font-size: 14px; color: var(--text-light); line-height: 1.5; }
-
-    /* ── FEATURES ── */
-    .features-section {
-      background: var(--cream);
-      padding: 40px 24px;
+    .nav-text-tag {
+      font-size: 11px;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 0.02em;
+      margin-top: 1px;
     }
 
-    .features-inner {
-      max-width: 1100px;
+    /* ── HERO ── */
+    .hero-wrap {
+      max-width: 1080px;
       margin: 0 auto;
+      padding: 52px 24px 64px;
     }
 
-    .features-title {
-      font-family: 'Fraunces', serif;
-      font-size: 22px; font-weight: 700;
-      color: var(--text-dark);
+    /* Mobile: stack */
+    .hero-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .hero-left { flex: 1; }
+
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255,255,255,0.09);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 100px;
+      padding: 5px 14px 5px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.8);
       margin-bottom: 24px;
     }
 
-    .features-grid { display: flex; flex-direction: column; }
-
-    .feature-row {
-      display: flex; align-items: flex-start; gap: 14px;
-      padding: 14px 0; border-bottom: 1px solid var(--cream-dark);
+    .live-dot {
+      width: 8px; height: 8px;
+      background: #5de08a;
+      border-radius: 50%;
+      box-shadow: 0 0 0 3px rgba(93,224,138,0.25);
+      animation: livepulse 2s ease-in-out infinite;
     }
 
-    .feature-row:last-child { border-bottom: none; }
+    @keyframes livepulse {
+      0%, 100% { box-shadow: 0 0 0 3px rgba(93,224,138,0.25); }
+      50% { box-shadow: 0 0 0 6px rgba(93,224,138,0.1); }
+    }
 
-    .feature-icon {
-      width: 40px; height: 40px;
-      background: var(--green-light); border-radius: 12px;
+    .hero-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 8.5vw, 58px);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+      color: var(--white);
+      margin-bottom: 18px;
+    }
+
+    .hero-headline em {
+      font-style: italic;
+      color: #86efac;
+    }
+
+    .hero-body {
+      font-size: 16px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.6);
+      max-width: 460px;
+      margin-bottom: 0;
+    }
+
+    /* ── FORM CARD ── */
+    .form-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .form-card-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+
+    .form-card-sub {
+      font-size: 13px;
+      color: var(--text-soft);
+      line-height: 1.5;
+      margin-bottom: 22px;
+    }
+
+    .field-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .field-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 13px 15px;
+      border-radius: 11px;
+      border: 1.5px solid var(--cream-dark);
+      background: var(--cream);
+      color: var(--text);
+      font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+      -webkit-appearance: none;
+    }
+
+    .form-input::placeholder { color: #b0bdb6; }
+
+    .form-input:focus {
+      border-color: var(--forest-mid);
+      background: var(--white);
+    }
+
+    .gmail-note {
+      font-size: 11px;
+      color: var(--text-soft);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .gmail-note svg { flex-shrink: 0; }
+
+    .submit-btn {
+      width: 100%;
+      padding: 15px;
+      border-radius: 12px;
+      border: none;
+      background: var(--forest);
+      color: var(--white);
+      font-size: 15px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      letter-spacing: 0.01em;
+      margin-top: 4px;
+    }
+
+    .submit-btn:hover { background: var(--forest-mid); }
+    .submit-btn:active { transform: scale(0.98); }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .form-footer-note {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .form-footer-dot {
+      width: 2px; height: 2px;
+      background: var(--text-soft);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ── SUCCESS ── */
+    .success-state {
+      display: none;
+      text-align: center;
+      padding: 12px 0;
+    }
+
+    .success-circle {
+      width: 64px; height: 64px;
+      background: var(--mint);
+      border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 20px; flex-shrink: 0;
+      margin: 0 auto 16px;
     }
 
-    .feature-title { font-weight: 600; font-size: 15px; color: var(--text-dark); margin-bottom: 2px; }
-    .feature-desc { font-size: 13px; color: var(--text-light); line-height: 1.45; }
+    .success-circle svg { width: 28px; height: 28px; }
+
+    .success-h {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px; font-weight: 700;
+      color: var(--text); margin-bottom: 8px;
+    }
+
+    .success-p { font-size: 14px; color: var(--text-soft); line-height: 1.55; }
+
+    /* ── DIVIDER ── */
+    .section-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.07);
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    /* ── FEATURES ── */
+    .features-wrap {
+      background: var(--cream);
+      padding: 52px 24px;
+    }
+
+    .features-inner { max-width: 1080px; margin: 0 auto; }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--sage);
+      margin-bottom: 12px;
+    }
+
+    .section-heading {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(24px, 5vw, 34px);
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 36px;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      max-width: 500px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2px;
+    }
+
+    .feature-card {
+      background: var(--white);
+      border-radius: 4px;
+      padding: 22px 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      transition: background 0.2s;
+    }
+
+    .feature-card:first-child { border-radius: 14px 14px 4px 4px; }
+    .feature-card:last-child { border-radius: 4px 4px 14px 14px; }
+
+    .feature-icon-wrap {
+      width: 44px; height: 44px;
+      background: var(--mint);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .feature-icon-wrap svg {
+      width: 22px; height: 22px;
+      stroke: var(--forest);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .feature-name {
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .feature-desc {
+      font-size: 13px;
+      color: var(--text-soft);
+      line-height: 1.5;
+    }
 
     /* ── STORY ── */
-    .story {
-      background: var(--green-dark);
-      padding: 40px 24px;
+    .story-wrap {
+      background: var(--forest-deep);
+      padding: 52px 24px;
     }
 
-    .story-inner { max-width: 1100px; margin: 0 auto; }
-
-    .story-quote {
-      font-family: 'Fraunces', serif;
-      font-size: 20px; font-style: italic;
-      color: rgba(255,255,255,0.9);
-      line-height: 1.5; margin-bottom: 16px;
-      position: relative; padding-left: 20px;
+    .story-inner {
+      max-width: 680px;
+      margin: 0 auto;
+      text-align: center;
     }
 
-    .story-quote::before {
-      content: ''; position: absolute;
-      left: 0; top: 4px; bottom: 4px;
-      width: 3px; background: #4ade80; border-radius: 2px;
+    .quote-mark {
+      font-family: 'Playfair Display', serif;
+      font-size: 72px;
+      line-height: 0.6;
+      color: rgba(255,255,255,0.12);
+      display: block;
+      margin-bottom: 20px;
+      font-style: italic;
     }
 
-    .story-attr { font-size: 13px; color: rgba(255,255,255,0.45); font-weight: 500; }
+    .story-text {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(18px, 3.5vw, 24px);
+      font-style: italic;
+      font-weight: 600;
+      color: rgba(255,255,255,0.88);
+      line-height: 1.55;
+      margin-bottom: 20px;
+    }
+
+    .story-author {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .author-avatar {
+      width: 36px; height: 36px;
+      background: var(--sage);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--white);
+    }
+
+    .author-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.6);
+    }
 
     /* ── PROOF BAR ── */
-    .proof-bar {
-      background: var(--cream-dark);
-      padding: 16px 24px;
-    }
-
-    .proof-inner {
-      max-width: 1100px; margin: 0 auto;
-      display: flex; align-items: center;
-      justify-content: center; gap: 8px;
-      flex-wrap: wrap;
-      font-size: 13px; color: var(--text-light);
-    }
-
-    .proof-dot { width: 3px; height: 3px; background: var(--text-light); border-radius: 50%; }
-
-    /* ── FOOTER ── */
-    footer {
-      background: var(--cream-dark);
-      padding: 16px 24px;
-      text-align: center;
-      font-size: 12px; color: var(--text-light);
+    .proof-wrap {
+      background: var(--cream-mid);
+      padding: 18px 24px;
       border-top: 1px solid var(--cream-dark);
     }
 
-    footer a { color: var(--text-light); }
+    .proof-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-soft);
+    }
 
-    /* ── ANIMATIONS ── */
+    .proof-sep {
+      color: var(--cream-dark);
+      font-size: 14px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--cream-mid);
+      padding: 16px 24px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-soft);
+      border-top: 1px solid var(--cream-dark);
+    }
+
+    footer a { color: var(--text-soft); text-decoration: underline; }
+
+    /* ── ANIMATION ── */
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(12px); }
+      from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .top-section { animation: fadeUp 0.4s ease both; }
-    .features-section { animation: fadeUp 0.4s ease 0.1s both; }
+    .hero-left { animation: fadeUp 0.5s ease both; }
+    .form-card { animation: fadeUp 0.5s ease 0.1s both; }
+    .features-wrap { animation: fadeUp 0.5s ease 0.15s both; }
 
     /* ── DESKTOP ── */
-    @media (min-width: 768px) {
-      nav { padding: 22px 48px; }
+    @media (min-width: 800px) {
+      nav { padding: 18px 40px; }
 
-      .top-section {
-        padding: 24px 48px 64px;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: auto auto;
-        gap: 0 64px;
-        align-items: start;
+      .hero-wrap { padding: 64px 40px 72px; }
+
+      .hero-grid {
+        flex-direction: row;
+        align-items: center;
+        gap: 56px;
       }
 
-      .beta-pill { grid-column: 1; grid-row: 1; }
-      h1 { grid-column: 1; grid-row: 2; font-size: clamp(40px, 4vw, 58px); }
-      .hero-sub { grid-column: 1; grid-row: 3; }
-      .form-card { grid-column: 2; grid-row: 1 / 4; margin-top: 0; align-self: center; }
+      .hero-left { flex: 1; }
 
-      .features-section { padding: 56px 48px; }
+      .form-card {
+        flex: 0 0 400px;
+        max-width: 400px;
+      }
+
+      .hero-body { font-size: 17px; }
+
+      .features-wrap { padding: 64px 40px; }
 
       .features-grid {
-        display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 0 56px;
+        gap: 2px;
       }
 
-      .features-grid .feature-row { border-bottom: 1px solid var(--cream-dark); }
-      .features-grid .feature-row:nth-last-child(-n+2) { border-bottom: none; }
+      .feature-card:first-child { border-radius: 14px 4px 4px 4px; }
+      .feature-card:nth-child(2) { border-radius: 4px 14px 4px 4px; }
+      .feature-card:nth-last-child(2) { border-radius: 4px 4px 4px 14px; }
+      .feature-card:last-child { border-radius: 4px 4px 14px 4px; }
 
-      .story { padding: 56px 48px; }
-      .story-quote { font-size: 24px; max-width: 680px; }
-
-      .proof-inner { padding: 0 48px; }
-      footer { padding: 20px 48px; }
+      .story-wrap { padding: 64px 40px; }
+      .proof-wrap { padding: 20px 40px; }
+      footer { padding: 18px 40px; }
     }
   </style>
 </head>
 <body>
 
   <!-- NAV -->
-  <nav>
-    <div class="nav-icon">🍲</div>
-    <div>
-      <div class="nav-name">Kitchen Calm</div>
-      <div class="nav-tag">One step at a time</div>
-    </div>
-  </nav>
+  <div class="nav-wrap">
+    <nav>
+      <div class="nav-logo">🍲</div>
+      <div>
+        <div class="nav-text-name">Kitchen Calm</div>
+        <div class="nav-text-tag">One step at a time</div>
+      </div>
+    </nav>
+  </div>
 
   <!-- HERO + FORM -->
-  <section class="top-section">
-    <div class="beta-pill">Beta Access — Android</div>
-    <h1>Can't decide what's for <em>dinner?</em></h1>
-    <p class="hero-sub">Free halal cooking app that matches meals to your energy level and walks you through cooking one step at a time.</p>
+  <div class="hero-wrap">
+    <div class="hero-grid">
 
-    <div class="form-card">
-      <div id="form-state">
-        <p class="form-card-title">Get free beta access</p>
-        <p class="form-card-sub">Enter your details and I'll send you the install link directly. No faff — just one link.</p>
-        <form id="beta-form">
-          <div class="form-group">
-            <input class="form-input" type="text" name="name" placeholder="Your first name" required autocomplete="given-name">
-            <input class="form-input" type="email" name="email" placeholder="Your Gmail address (required)" required autocomplete="email" inputmode="email">
+      <div class="hero-left">
+        <div class="live-badge">
+          <span class="live-dot"></span>
+          Beta Access — Android
+        </div>
+        <h1 class="hero-headline">
+          Can't decide<br>what's for <em>dinner?</em>
+        </h1>
+        <p class="hero-body">
+          Free halal cooking app that matches meals to your energy level — Low, Medium or High — and walks you through cooking one step at a time.
+        </p>
+      </div>
+
+      <div class="form-card" id="form-card">
+        <div id="form-state">
+          <p class="form-card-headline">Get free beta access</p>
+          <p class="form-card-sub">Enter your details and I'll send you the install link. No faff — just one link.</p>
+
+          <form id="beta-form">
+            <div class="field-wrap">
+              <div class="field-group">
+                <input
+                  class="form-input"
+                  type="text"
+                  name="name"
+                  placeholder="First name"
+                  required
+                  autocomplete="given-name"
+                >
+              </div>
+              <div class="field-group">
+                <input
+                  class="form-input"
+                  type="email"
+                  name="email"
+                  placeholder="Gmail address"
+                  required
+                  autocomplete="email"
+                  inputmode="email"
+                >
+                <span class="gmail-note">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  Gmail address required for Google Play beta
+                </span>
+              </div>
+            </div>
+
+            <button class="submit-btn" type="submit" id="submit-btn">
+              <span id="btn-text">Get free beta access →</span>
+            </button>
+          </form>
+
+          <div class="form-footer-note">
+            <span>Android only</span>
+            <span class="form-footer-dot"></span>
+            <span>100% free</span>
+            <span class="form-footer-dot"></span>
+            <span>No account needed</span>
+            <span class="form-footer-dot"></span>
+            <span>Email never shared</span>
           </div>
-          <button class="form-btn" type="submit" id="submit-btn">
-            <span id="btn-text">Get free beta access →</span>
-          </button>
-        </form>
-        <p class="form-note">⚠️ Gmail address required for Google Play beta access
-        Android only · Free · No account needed · Email never shared</p>
+        </div>
+
+        <div class="success-state" id="success-state">
+          <div class="success-circle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#1a4731" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <p class="success-h">You're on the list!</p>
+          <p class="success-p">I'll send your install link within 24 hours.<br>JazakAllah khayran for your support 🤲</p>
+        </div>
       </div>
-      <div class="success-state" id="success-state">
-        <div class="success-icon">✅</div>
-        <p class="success-title">You're on the list!</p>
-        <p class="success-msg">I'll send your install link within 24 hours. JazakAllah khayran 🤲</p>
-      </div>
+
     </div>
-  </section>
+  </div>
+
+  <div class="section-divider"></div>
 
   <!-- FEATURES -->
-  <section class="features-section">
+  <section class="features-wrap">
     <div class="features-inner">
-      <p class="features-title">Why Kitchen Calm is different</p>
+      <p class="section-label">Why it works</p>
+      <h2 class="section-heading">Built for the days when your brain just can't</h2>
+
       <div class="features-grid">
-        <div class="feature-row">
-          <div class="feature-icon">⚡</div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrap">
+            <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
           <div>
-            <div class="feature-title">Matched to your energy</div>
-            <div class="feature-desc">Pick Low, Medium or High and get a meal you can actually make right now.</div>
+            <p class="feature-name">Matched to your energy</p>
+            <p class="feature-desc">Pick Low, Medium or High and get a meal you can actually make right now — not tomorrow, right now.</p>
           </div>
         </div>
-        <div class="feature-row">
-          <div class="feature-icon">👣</div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrap">
+            <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+          </div>
           <div>
-            <div class="feature-title">One step at a time</div>
-            <div class="feature-desc">Cook Mode guides you through each step with built-in timers. No scrolling, no overwhelm.</div>
+            <p class="feature-name">One step at a time</p>
+            <p class="feature-desc">Cook Mode shows one instruction at a time with built-in timers. No scrolling back and forth. No losing your place.</p>
           </div>
         </div>
-        <div class="feature-row">
-          <div class="feature-icon">🆘</div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrap">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+          </div>
           <div>
-            <div class="feature-title">Rescue Mode</div>
-            <div class="feature-desc">Completely overwhelmed? Strips everything back to 3–5 word steps in giant text.</div>
+            <p class="feature-name">Rescue Mode</p>
+            <p class="feature-desc">Completely overwhelmed? Rescue Mode strips everything back to 3–5 word steps in giant text. Always free.</p>
           </div>
         </div>
-        <div class="feature-row">
-          <div class="feature-icon">☪️</div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrap">
+            <svg viewBox="0 0 24 24"><path d="M3.85 8.62a4 4 0 014.78-4.77 4 4 0 016.74 0 4 4 0 014.78 4.78 4 4 0 010 6.74 4 4 0 01-4.77 4.78 4 4 0 01-6.75 0 4 4 0 01-4.78-4.77 4 4 0 010-6.76z"/><path d="M9 12l2 2 4-4"/></svg>
+          </div>
           <div>
-            <div class="feature-title">Halal by default</div>
-            <div class="feature-desc">Every meal is halal-verified. No filtering needed. Built for halal households in the UK.</div>
+            <p class="feature-name">Halal by default</p>
+            <p class="feature-desc">Every meal is halal-verified. No filtering needed. Built specifically for halal households in the UK.</p>
           </div>
         </div>
+
       </div>
     </div>
   </section>
 
   <!-- STORY -->
-  <section class="story">
+  <section class="story-wrap">
     <div class="story-inner">
-      <p class="story-quote">"I built this for my wife. Dinner time was becoming one of the most stressful parts of our evening. She suggested it might help others — and here we are."</p>
-      <p class="story-attr">— Rashid, founder of Kitchen Calm</p>
+      <span class="quote-mark">"</span>
+      <p class="story-text">I built this for my wife. Dinner time was becoming one of the most stressful parts of our evening. She suggested it might help others — and here we are.</p>
+      <div class="story-author">
+        <div class="author-avatar">R</div>
+        <span class="author-name">Rashid, founder of Kitchen Calm</span>
+      </div>
     </div>
   </section>
 
   <!-- PROOF BAR -->
-  <div class="proof-bar">
+  <div class="proof-wrap">
     <div class="proof-inner">
-      <span>🍃 Free</span>
-      <span class="proof-dot"></span>
-      <span>No account needed</span>
-      <span class="proof-dot"></span>
-      <span>100+ halal meals</span>
-      <span class="proof-dot"></span>
-      <span>Android</span>
+      <span>100+ halal-verified meals</span>
+      <span class="proof-sep">·</span>
+      <span>Breakfast, lunch & dinner</span>
+      <span class="proof-sep">·</span>
+      <span>Built in the UK</span>
+      <span class="proof-sep">·</span>
+      <span>Free, always</span>
     </div>
   </div>
 
   <!-- FOOTER -->
   <footer>
-    <a href="https://kitchencalm.app/privacy.html">Privacy policy</a> · © 2026 Kitchen Calm
+    <a href="https://kitchencalm.app/privacy.html">Privacy policy</a> &nbsp;·&nbsp; © 2026 Kitchen Calm
   </footer>
 
   <script>
@@ -431,18 +702,27 @@
       const name = form.querySelector('[name="name"]').value.trim();
       const email = form.querySelector('[name="email"]').value.trim();
       if (!name || !email) return;
+
       submitBtn.disabled = true;
-      btnText.textContent = 'Sending...';
+      btnText.textContent = 'Sending…';
+
       try {
         const res = await fetch('https://formspree.io/f/xpqnzwoo', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body: JSON.stringify({ name, email, source: 'beta-signup', _subject: `New beta signup: ${name}` })
+          body: JSON.stringify({
+            name, email,
+            source: 'beta-signup',
+            _subject: `New beta signup: ${name}`
+          })
         });
+
         if (res.ok) {
           formState.style.display = 'none';
           successState.style.display = 'block';
-        } else { throw new Error(); }
+        } else {
+          throw new Error();
+        }
       } catch {
         btnText.textContent = 'Something went wrong — try again';
         submitBtn.disabled = false;
