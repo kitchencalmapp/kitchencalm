@@ -41,6 +41,12 @@ Kitchen Calm is a mobile-first web app that helps adults with ADHD get dinner (o
 - **Rescue Mode** — Ultra-minimal one-step view with 3–5-word rescue steps. Large text, zero visual noise. Accessible from the home screen and the recipe screen. Always free.
 - **Inline timers** — Auto-parsed from step text (detects "5 minutes", "2–3 min", "until golden"). Tap any timer pill to open a countdown sheet. Multiple simultaneous timers. Vibrate + audio chime + screen flash on completion.
 - **Interruption recovery** — "I got interrupted" button saves current meal to localStorage. A resume card appears on the home screen next visit.
+- **Distraction Recovery** — "Lost?" button in Cook Mode shows the current step and elapsed cook time, helping the user reorient without leaving the screen.
+- **Voice Commands** — Hands-free control during Cook Mode via Web Speech API. Recognised phrases: "next step", "previous step", "repeat" (re-reads current step aloud), "start timer [N] minutes", "cancel timer", "home / exit / go back". Auto-restart with 5-second delay to reduce repeated audio beeps. Voice-triggered timers do not open the sheet automatically — they show a pill and a toast instead.
+
+### Meal planning & nutrition
+- **Weekly Meal Planner** — 7-day grid (Mon–Sun) on `screen-planner`. Tap any day to pick a meal by energy level (Low 🌙 / Medium 🌤 / High ⚡); a random dinner from that pool is assigned. "Auto-fill week" picks an energy level then fills all 7 days with unique meals. Clear individual days with ✕. "Generate shopping list" compares the week's `ingredientIds` against pantry and adds missing items to the shopping list. Plan persisted to `kc_planner`. Shopping and nutrition buttons hidden until at least one day is filled.
+- **Nutrition Snapshots** — Per-meal calorie/protein/carbs/fat estimates shown as badge pills on the recipe screen. Estimates come from `_nutritionEstimate` lookup by `meal.category` (e.g. chicken: 420 cal / 35g protein), scaled by serving size. Meals with a `meal.nutrition` object use that directly. Weekly planner has a "📊 Nutrition" button that shows averages per meal and weekly totals for all planned days.
 
 ### Filtering & personalisation
 - **Dietary filters** — Low Carb, Grain Free, Clean, Quick (under 20 min), Easy wash (minimal washing up), Halal (filters to meals labelled halal).
@@ -137,6 +143,7 @@ HANDOVER.md                — This file
 | `feedback` | GDPR feedback form (Formspree) with success/error states |
 | `history` | Full-screen all cooked meals list with back button |
 | `waitlist` | Pro waitlist email capture (success/error states) |
+| `planner` | Weekly meal planner — 7-day grid with auto-fill, shopping list export, nutrition summary |
 | `soon` | Generic coming-soon placeholder |
 
 ### localStorage keys
@@ -154,6 +161,7 @@ HANDOVER.md                — This file
 | `kc_desktopBannerDismissed` | Flag — QR banner not shown again |
 | `kc_pantry_welcomed` | Flag — Cupboard welcome banner not shown again |
 | `kc_preferredVoice` | Name of the TTS voice last selected by the voice picker (persists across sessions) |
+| `kc_planner` | Array[7] of day objects `{ id, name, emoji, energy, mealType }` or `null` — weekly meal plan |
 
 ---
 
@@ -270,7 +278,7 @@ HANDOVER.md                — This file
 ## What Still Needs Building
 
 1. **Partner Mode** — Tips for partners/carers on how to help. How to offer choices, when to step in, what not to say. Likely a separate screen accessible from home.
-2. **Nutrition estimates** — Rough calories and macros per meal. ADHD and diet intersect a lot; users have asked for this. Needs data added to each meal object.
+2. **Focus Timer / Body Doubling** — Ambient sounds + visual focus countdown per step. Next on the roadmap.
 3. **Cloud sync / accounts** — All data is currently device-local. Syncing across devices requires auth. This is the prerequisite for a proper Pro subscription model.
 
 ---
@@ -355,5 +363,36 @@ Key themes that have shaped development:
 - "🔇 Read aloud / 🔊 Reading" toggle button added to cook header (`.cook-tts-toggle`)
 - "🔊 Listen" per-step button (`.btn-speak-step`) added inside each cook step card
 - New CSS: `.cook-controls` flex wrapper, `.cook-tts-toggle` with `.active` pulse animation (`ttsPulse`), `.btn-speak-step`
+
+---
+
+## Session Summary — 24 May 2026 (second push)
+
+### Code changes shipped this session
+
+**Weekly Meal Planner (`js/app.js`, `css/styles.css`, `index.html`)**
+- New screen `screen-planner` with Mon–Sun day rows
+- `state.planner` — Array[7] of day objects or null
+- `_loadPlanner()` / `_savePlanner()` — persisted to `kc_planner`
+- `_renderPlanner()` — renders day rows; shows energy emoji (🌙/🌤/⚡); hides shopping/nutrition buttons until at least one day filled
+- `pickPlannerDay(i)` / `_showPlannerMealPicker(i)` — inline picker with energy level buttons
+- `_fillPlannerDayEnergy(i, energy)` — picks a random dinner from that energy pool and saves
+- `clearPlannerDay(i)` — removes a single day
+- `autoFillPlanner()` / `_doAutoFill(energy)` — fills all 7 days with unique meals; toasts on completion
+- `generatePlannerShopping()` — compares week's `ingredientIds` against pantry, adds missing items to shopping list
+- `showNutritionSummary()` — replaces grid with average cal/protein/carbs/fat per meal and weekly totals; "← Back to plan" restores grid
+
+**Nutrition Snapshots (`js/app.js`, `css/styles.css`)**
+- `_nutritionEstimate` lookup table — estimates by `meal.category` (9 categories + `_default`)
+- `_getNutrition(meal)` — returns `{ cal, protein, carbs, fat }`, uses `meal.nutrition` if present, otherwise estimates and scales by serving size
+- Recipe screen now renders a `.recipe-nutrition-row` with four `.nutrition-badge` pills (🔥 cal, 💪 protein, 🍚 carbs, 🧈 fat)
+- Planner nutrition summary uses the same function averaged across all planned days
+
+**Voice commands refinement (`js/app.js`)**
+- Auto-restart delay increased from 2s to 5s to reduce unwanted beep frequency
+- "cancel timer / remove timer / clear timer" command added
+- "home / exit / finish / go back" command added
+
+**ROADMAP.md** — Weekly Meal Planner and Nutrition Snapshots marked done; Focus Timer / Body Doubling listed as next
 
 *Last updated: 24 May 2026. For questions contact info4rh@gmail.com.*
