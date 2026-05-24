@@ -30,7 +30,8 @@ const App = (() => {
       meal:      null,
       steps:     [],
       stepIndex: 0
-    }
+    },
+    ttsAutoRead: false
   };
 
   let toastTimer    = null;
@@ -38,6 +39,7 @@ const App = (() => {
   let _timerCounter = 0;
   const _timers     = [];
   let _activeTimerId = null;
+  let _cachedVoices  = [];
 
   const GENERIC_RESCUE_STEPS = [
     'Take three deep breaths',
@@ -1309,17 +1311,21 @@ const App = (() => {
       localStorage.setItem(COOK_USES_KEY, String(uses + 1));
     } catch(_) {}
 
-    state.cookMode.meal       = meal;
-    state.cookMode.stepIndex  = 0;
-    state.cookMode.totalSteps = meal.steps.length;
+    state.cookMode.meal          = meal;
+    state.cookMode.stepIndex     = 0;
+    state.cookMode.totalSteps    = meal.steps.length;
+    state.cookMode.stepStartedAt = Date.now();
 
     _cancelAllTimers();
     go('cook');
+    _syncTTSToggle();
     _renderCookStep();
   }
 
   function exitCookMode() {
     _cancelAllTimers();
+    stopSpeaking();
+    _stopVoiceRecognition();
     go('recipe');
   }
 
@@ -1332,7 +1338,9 @@ const App = (() => {
     }
 
     state.cookMode.stepIndex++;
+    state.cookMode.stepStartedAt = Date.now();
     _renderCookStep();
+    if (state.ttsAutoRead) speakCurrentStep();
   }
 
   function _renderCookStep() {
@@ -1362,12 +1370,16 @@ const App = (() => {
       <div class="cook-current-step">
         <span class="cook-step-number">${stepIndex + 1}</span>
         <div class="cook-step-text">${stepHtml}</div>
+        <button class="btn-speak-step" onclick="App.speakCurrentStep()" aria-label="Read this step aloud">🔊 Listen</button>
       </div>`;
 
     const footer = document.getElementById('cook-footer');
     if (footer) {
       const isLast = stepIndex >= totalSteps - 1;
       footer.innerHTML = `
+        <button class="btn-distraction-recover" onclick="App.recoverDistraction()">
+          😵‍💫 Lost? Tap here
+        </button>
         <button class="btn-next-step" onclick="App.nextCookStep()">
           ${isLast ? 'All done! 🎉' : 'Next Step →'}
         </button>`;
@@ -1429,13 +1441,384 @@ const App = (() => {
 
   function cookModeAgain() {
     state.cookMode.stepIndex = 0;
+    state.cookMode.stepStartedAt = Date.now();
+    _renderCookStep();
+  }
+
+  function recoverDistraction() {
+    var meal = state.cookMode.meal;
+    if (!meal) return;
+    var stepIndex    = state.cookMode.stepIndex;
+    var stepText     = meal.steps[stepIndex];
+    var elapsedSecs  = Math.floor((Date.now() - (state.cookMode.stepStartedAt || Date.now())) / 1000);
+    var elapsedLabel = elapsedSecs < 60
+      ? elapsedSecs + 's'
+      : Math.floor(elapsedSecs / 60) + 'm ' + (elapsedSecs % 60) + 's';
+
+    // Build recovery message
+    var prevStepLabel = '';
+    if (stepIndex > 0) {
+      prevStepLabel = '<div class="recover-prev">✅ You finished: <em>' + _escape(meal.steps[stepIndex - 1]) + '</em></div>';
+    }
+
+    var body = document.getElementById('cook-body');
+    if (body) {
+      body.innerHTML = `
+        <div class="recovery-panel">
+          <div class="recovery-head">
+            <span class="recovery-emoji">💚</span>
+            <div>
+              <h2 class="recovery-title">No worries — you're right here</h2>
+              <p class="recovery-elapsed">You've been on this step for ${elapsedLabel}</p>
+            </div>
+          </div>
+          ${prevStepLabel}
+          <div class="recovery-current">
+            <span class="cook-step-number">${stepIndex + 1}</span>
+            <div class="recovery-step-text">${_injectTimers(_boldAmounts(stepText), stepIndex)}</div>
+          </div>
+          <div class="recovery-actions">
+            <button class="btn-recovery-listen" onclick="App.speakCurrentStep()">🔊 Read it again</button>
+            <button class="btn-recovery-back" onclick="App._restoreCookStep()">← Back to cooking</button>
+          </div>
+        </div>`;
+    }
+
+    // Hide distraction button, show only next step
+    var footer = document.getElementById('cook-footer');
+    if (footer) {
+      footer.innerHTML = `
+        <button class="btn-next-step" onclick="App.nextCookStep()">
+          Next Step →
+        </button>`;
+    }
+
+    // Read the step aloud automatically
+    if (state.ttsAutoRead) speakCurrentStep();
+  }
+
+  // Internal: restore normal cook step view
+  function _restoreCookStep() {
+    state.cookMode.stepStartedAt = Date.now();
     _renderCookStep();
   }
 
   function exitCookToHome() {
     _renderStreakBadge();
     _cancelAllTimers();
+    stopSpeaking();
+    _stopVoiceRecognition();
     go('home');
+  }
+
+  // ── Text-to-Speech ─────────────────────────────────────────
+
+  const PREFERRED_VOICE_KEY = 'kc_preferredVoice';
+  let _preferredVoiceName = null;
+
+  function _loadPreferredVoice() {
+    try {
+      _preferredVoiceName = localStorage.getItem(PREFERRED_VOICE_KEY);
+    } catch (_) { _preferredVoiceName = null; }
+  }
+
+  function _savePreferredVoice(name) {
+    try {
+      _preferredVoiceName = name;
+      localStorage.setItem(PREFERRED_VOICE_KEY, name);
+    } catch (_) {}
+  }
+
+  function toggleAutoRead() {
+    state.ttsAutoRead = !state.ttsAutoRead;
+    _syncTTSToggle();
+    if (state.ttsAutoRead) {
+      var voiceName = _getActiveVoiceName();
+      var hint = voiceName ? ' (' + voiceName + ')' : '';
+      _toast('Auto-read on — each step will be read aloud' + hint);
+      speakCurrentStep();
+    } else {
+      stopSpeaking();
+      _toast('Auto-read off');
+    }
+  }
+
+  function _syncTTSToggle() {
+    var btn = document.getElementById('cook-tts-toggle');
+    var icon = btn ? btn.querySelector('.tts-toggle-icon') : null;
+    var label = btn ? btn.querySelector('.tts-toggle-label') : null;
+    if (btn) {
+      btn.classList.toggle('active', state.ttsAutoRead);
+      btn.setAttribute('aria-pressed', String(state.ttsAutoRead));
+    }
+    if (icon) icon.textContent = state.ttsAutoRead ? '🔊' : '🔇';
+    if (label) label.textContent = state.ttsAutoRead ? 'Reading' : 'Read aloud';
+  }
+
+  function speakCurrentStep() {
+    var meal = state.cookMode.meal;
+    if (!meal) return;
+    var stepText = meal.steps[state.cookMode.stepIndex];
+    if (!stepText) return;
+    _speak(stepText);
+  }
+
+  function stopSpeaking() {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+  }
+
+  function _speak(text) {
+    if (!('speechSynthesis' in window)) {
+      _toast('Text-to-speech not supported on this device');
+      return;
+    }
+    window.speechSynthesis.cancel();
+    var cleanText = text.replace(/<[^>]*>/g, '').trim();
+    if (!cleanText) return;
+    var utterance = new SpeechSynthesisUtterance(cleanText);
+    var voices = _cachedVoices.length > 0 ? _cachedVoices : window.speechSynthesis.getVoices();
+    _pickBestVoice(utterance, voices);
+    utterance.rate = 0.92;
+    utterance.pitch = 1.0;
+    utterance.volume = 0.9;
+    window.speechSynthesis.speak(utterance);
+  }
+
+  function _getActiveVoiceName() {
+    var voices = _cachedVoices.length > 0 ? _cachedVoices : window.speechSynthesis.getVoices();
+    if (!voices.length) return null;
+    return _pickBestVoiceName(voices);
+  }
+
+  function _pickBestVoiceName(voices) {
+    if (!voices.length) return null;
+
+    // 1) User's saved preference (sticky across sessions)
+    if (_preferredVoiceName) {
+      var saved = voices.find(function(v) { return v.name === _preferredVoiceName; });
+      if (saved) return saved.name;
+    }
+
+    // 2) Microsoft natural voices — highest quality on Windows
+    //    Names like: "Microsoft Ava Online (Natural HD) - English (United States)"
+    //    Prefer Ava HD first, then Ava, then any natural/online voice
+    var avaHD = voices.find(function(v) {
+      return v.lang.startsWith('en') && /ava.*natural\s*hd/i.test(v.name);
+    });
+    if (avaHD) return avaHD.name;
+
+    var ava = voices.find(function(v) {
+      return v.lang.startsWith('en') && /ava.*(?:natural|online)/i.test(v.name);
+    });
+    if (ava) return ava.name;
+
+    var onlineNat = voices.find(function(v) {
+      return v.lang.startsWith('en') && /online|natural|premium|enhanced/i.test(v.name);
+    });
+    if (onlineNat) return onlineNat.name;
+
+    // 3) Samantha — best natural voice on macOS/iOS
+    var sam = voices.find(function(v) {
+      return v.lang.startsWith('en') && v.name === 'Samantha';
+    });
+    if (sam) return sam.name;
+
+    // 4) Google voices — best on Android
+    var gg = voices.find(function(v) {
+      return v.lang.startsWith('en') && /google/i.test(v.name);
+    });
+    if (gg) return gg.name;
+
+    // 5) Microsoft Zira — solid en-US voice, often the best on Windows
+    var zira = voices.find(function(v) {
+      return v.lang.startsWith('en-US') && /zira/i.test(v.name);
+    });
+    if (zira) return zira.name;
+
+    // 6) British English — often sounds pleasant on some systems
+    var gb = voices.find(function(v) {
+      return v.lang.startsWith('en-GB') || v.lang.startsWith('en_GB');
+    });
+    if (gb) return gb.name;
+
+    // 6) Any en-US English voice (including Microsoft Zira if nothing better found)
+    var usOk = voices.find(function(v) {
+      return v.lang.startsWith('en-US');
+    });
+    if (usOk) return usOk.name;
+
+    // 7) Any English voice
+    var anyEn = voices.find(function(v) { return v.lang.startsWith('en'); });
+    if (anyEn) return anyEn.name;
+
+    // 8) Absolute fallback
+    return voices[0].name;
+  }
+
+  function _pickBestVoice(utterance, voices) {
+    var name = _pickBestVoiceName(voices);
+    if (!name) return;
+    var pick = voices.find(function(v) { return v.name === name; });
+    if (pick) {
+      utterance.voice = pick;
+      // Remember this voice for next time
+      if (name !== _preferredVoiceName) _savePreferredVoice(name);
+    }
+  }
+
+  // ── Voice Commands ────────────────────────────────────────
+
+  let _voiceRecognition = null;
+
+  function toggleVoiceCommands() {
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+      _toast('Voice commands not supported on this browser');
+      return;
+    }
+    if (_voiceRecognition) {
+      _stopVoiceRecognition();
+    } else {
+      _startVoiceRecognition();
+    }
+  }
+
+  function _startVoiceRecognition() {
+    var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    var rec = new SpeechRecognition();
+    rec.continuous = true;
+    rec.interimResults = false;
+    rec.lang = 'en-US';
+
+    rec.onresult = function(event) {
+      var last = event.results[event.results.length - 1];
+      if (!last.isFinal) return;
+      var transcript = (last[0].transcript || '').toLowerCase().trim();
+      if (!transcript) return;
+      _showVoiceHeard(transcript);
+      _handleVoiceCommand(transcript);
+    };
+
+    rec.onerror = function(event) {
+      if (event.error === 'no-speech') return; // Silent — user just didn't speak
+      if (event.error === 'aborted') return;    // We stopped it intentionally
+      if (event.error === 'not-allowed') {
+        _toast('Microphone access denied — check browser permissions');
+        _stopVoiceRecognition();
+        return;
+      }
+      // Network or other error — restart
+      console.warn('Voice recognition error:', event.error);
+      setTimeout(function() {
+        if (_voiceRecognition) _voiceRecognition.start();
+      }, 500);
+    };
+
+    rec.onend = function() {
+      // Auto-restart if still active (not intentionally stopped)
+      if (_voiceRecognition === rec) {
+        try { rec.start(); } catch(_) {}
+      }
+    };
+
+    _voiceRecognition = rec;
+    try { rec.start(); } catch(_) {
+      _toast('Could not start microphone');
+      _voiceRecognition = null;
+      return;
+    }
+
+    _syncVoiceToggle();
+    _showVoiceIndicator('Listening...', '');
+  }
+
+  function _stopVoiceRecognition() {
+    if (_voiceRecognition) {
+      _voiceRecognition.onend = null; // Prevent auto-restart
+      _voiceRecognition.abort();
+      _voiceRecognition = null;
+    }
+    _syncVoiceToggle();
+    _hideVoiceIndicator();
+  }
+
+  function _syncVoiceToggle() {
+    var btn   = document.getElementById('cook-voice-toggle');
+    var icon  = btn ? btn.querySelector('.voice-toggle-icon') : null;
+    var label = btn ? btn.querySelector('.voice-toggle-label') : null;
+    var active = !!_voiceRecognition;
+    if (btn) {
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-pressed', String(active));
+    }
+    if (icon)  icon.textContent  = active ? '🎤' : '🎤';
+    if (label) label.textContent = active ? 'Listening' : 'Voice';
+  }
+
+  function _showVoiceIndicator(label, cmd) {
+    var el    = document.getElementById('cook-voice-indicator');
+    var lbl   = document.getElementById('voice-indicator-label');
+    var cmdEl = document.getElementById('voice-indicator-cmd');
+    if (el) el.hidden = false;
+    if (lbl) lbl.textContent = label;
+    if (cmdEl) cmdEl.textContent = cmd ? 'Heard: "' + cmd + '"' : '';
+  }
+
+  function _hideVoiceIndicator() {
+    var el = document.getElementById('cook-voice-indicator');
+    if (el) el.hidden = true;
+  }
+
+  function _showVoiceHeard(transcript) {
+    _showVoiceIndicator('Got it!', transcript);
+    clearTimeout(window.__voiceHeardTimer);
+    window.__voiceHeardTimer = setTimeout(function() {
+      if (_voiceRecognition) _showVoiceIndicator('Listening...', '');
+    }, 2000);
+  }
+
+  function _handleVoiceCommand(transcript) {
+    // "next" / "next step"
+    if (/\bnext\b/.test(transcript)) {
+      nextCookStep();
+      return;
+    }
+    // "repeat" / "again" / "read" / "say it"
+    if (/\b(repeat|again|read|say)\b/.test(transcript)) {
+      speakCurrentStep();
+      return;
+    }
+    // "timer [N]" / "start timer [N]" / "set timer [N]"
+    var timerMatch = transcript.match(/\btimer\s*(\d+)\b/);
+    if (timerMatch) {
+      var minutes = parseInt(timerMatch[1]);
+      if (minutes > 0 && minutes <= 120) {
+        startStepTimer(state.cookMode.stepIndex, minutes * 60, minutes + ' min timer');
+        _toast('Timer set: ' + minutes + ' min');
+      }
+      return;
+    }
+    // "stop" / "pause" / "shut up" / "quiet"
+    if (/\b(stop|pause|shut\s*up|quiet)\b/.test(transcript)) {
+      stopSpeaking();
+      return;
+    }
+    // "lost" / "where am I" / "help"
+    if (/\b(lost|where|help)\b/.test(transcript)) {
+      recoverDistraction();
+      return;
+    }
+    // "back" / "previous"
+    if (/\b(back|previous)\b/.test(transcript)) {
+      if (state.cookMode.stepIndex > 0) {
+        state.cookMode.stepIndex--;
+        state.cookMode.stepStartedAt = Date.now();
+        _renderCookStep();
+        if (state.ttsAutoRead) speakCurrentStep();
+      }
+      return;
+    }
   }
 
   // ── Paywall ───────────────────────────────────────────────────
@@ -1690,6 +2073,7 @@ const App = (() => {
   }
 
   function exitRescueMode() {
+    stopSpeaking();
     if (state.selectedMeal) {
       go('recipe');
     } else {
@@ -1852,11 +2236,97 @@ const App = (() => {
       html += `</div></div>`;
     });
     document.getElementById('pantry-items').innerHTML = html;
+    _updatePantryMatchBar();
   }
 
   function togglePantry(id) {
     Pantry.toggle(id);
     _renderPantry();
+    _updatePantryMatchBar();
+  }
+
+  // ── Photo Pantry ────────────────────────────────────────────
+
+  function openPantryCamera() {
+    var input = document.getElementById('pantry-photo-input');
+    if (input) input.click();
+  }
+
+  function handlePantryPhoto(event) {
+    var file = event.target.files && event.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var preview = document.getElementById('pantry-photo-preview');
+      var img     = document.getElementById('pantry-photo-img');
+      var btn     = document.querySelector('.btn-photo-capture');
+      if (preview) preview.hidden = false;
+      if (btn)     btn.style.display = 'none';
+      if (img)     img.src = e.target.result;
+      _updatePantryMatchBar();
+    };
+    reader.readAsDataURL(file);
+    // Reset file input so re-taking the same photo works
+    event.target.value = '';
+  }
+
+  function clearPantryPhoto() {
+    var preview = document.getElementById('pantry-photo-preview');
+    var btn     = document.querySelector('.btn-photo-capture');
+    if (preview) preview.hidden = true;
+    if (btn)     btn.style.display = '';
+    var matchBar = document.getElementById('pantry-match-bar');
+    if (matchBar) matchBar.hidden = true;
+  }
+
+  function _updatePantryMatchBar() {
+    // Only show when a photo is present
+    var preview = document.getElementById('pantry-photo-preview');
+    if (!preview || preview.hidden) return;
+
+    var owned = Pantry.getOwned();
+    if (owned.size === 0) return;
+
+    // Count how many meals are fully cookable with current pantry
+    var allMeals = [].concat(MEALS.low || [], MEALS.medium || [], MEALS.high || []);
+    var cookable = allMeals.filter(function(meal) {
+      return meal.ingredientIds && meal.ingredientIds.length > 0 &&
+        meal.ingredientIds.every(function(id) { return owned.has(id); });
+    });
+
+    var bar = document.getElementById('pantry-match-bar');
+    var text = document.getElementById('pantry-match-text');
+    if (!bar || !text) return;
+
+    if (cookable.length === 0) {
+      // Show how many items away they are
+      var closest = null;
+      var closestMissing = Infinity;
+      allMeals.forEach(function(meal) {
+        if (!meal.ingredientIds) return;
+        var missing = meal.ingredientIds.filter(function(id) { return !owned.has(id); });
+        if (missing.length < closestMissing) {
+          closestMissing = missing.length;
+          closest = meal;
+        }
+      });
+      if (closest && closestMissing <= 3) {
+        text.textContent = '🛒 Almost! \u201c' + closest.name + '\u201d needs ' + closestMissing + ' more item' + (closestMissing !== 1 ? 's' : '');
+        bar.style.background = '#FFF8E8';
+        bar.style.color = '#B07A10';
+      } else {
+        text.textContent = '📸 Got the photo! Now tick what you see.';
+        bar.style.background = 'var(--surface-2)';
+        bar.style.color = 'var(--text-2)';
+        bar.hidden = false;
+        return;
+      }
+    } else {
+      text.textContent = '✅ You can cook ' + cookable.length + ' meal' + (cookable.length !== 1 ? 's' : '') + ' with what you have!';
+      bar.style.background = 'var(--success-bg)';
+      bar.style.color = 'var(--success)';
+    }
+    bar.hidden = false;
   }
 
   // ── Shopping List ─────────────────────────────────────────────
@@ -1922,6 +2392,7 @@ const App = (() => {
     Pantry.completeShopping();
     _renderShopping();
     _toast('Cupboard updated!');
+    _updatePantryMatchBar();
   }
 
   // ── Feedback ─────────────────────────────────────────────────
@@ -2126,6 +2597,21 @@ const App = (() => {
 
   // ── Init ─────────────────────────────────────────────────────
 
+  // Cache speech voices (Chrome loads them async)
+  _loadPreferredVoice();
+  if ('speechSynthesis' in window) {
+    _cachedVoices = window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = function() {
+      _cachedVoices = window.speechSynthesis.getVoices();
+    };
+    // Chrome sometimes fires onvoiceschanged before our handler is set;
+    // force a second fetch after a short delay to catch late-loading voices
+    setTimeout(function() {
+      var fresh = window.speechSynthesis.getVoices();
+      if (fresh.length > 0) { _cachedVoices = fresh; }
+    }, 600);
+  }
+
   Pantry.load();
   _renderStreakBadge();
   _loadHistory();
@@ -2154,6 +2640,7 @@ const App = (() => {
     toggleFilter, setPrepFilter, setPortionSize,
     setCategory, filterMealGrid, clearAllFilters,
     togglePantry, addToShopping,
+    openPantryCamera, handlePantryPhoto, clearPantryPhoto,
     toggleShopItem, removeShopItem, doneShopping,
     saveInterruption, resumeCooking, clearInterruption,
     dismissPantryWelcome,
@@ -2163,7 +2650,10 @@ const App = (() => {
     // Cook mode
     startCookMode, exitCookMode, nextCookStep,
     cookModeAgain, exitCookToHome, rateCookMeal,
+    recoverDistraction, _restoreCookStep,
     paywallPro, paywallContinue, submitWaitlist, retryWaitlist,
+    toggleAutoRead, speakCurrentStep, stopSpeaking,
+    toggleVoiceCommands,
     // Timers
     startStepTimer, openTimer, closeTimerSheet,
     toggleActiveTimer, cancelActiveTimer,

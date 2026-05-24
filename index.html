@@ -283,7 +283,22 @@
     </div>
     <div class="cook-header">
       <button class="cook-back-btn" onclick="App.exitCookMode()">← Back</button>
-      <div class="cook-step-counter" id="cook-step-counter">Step 1 of 1</div>
+      <div class="cook-controls">
+        <button class="cook-tts-toggle" id="cook-tts-toggle" onclick="App.toggleAutoRead()" aria-label="Auto-read steps aloud" aria-pressed="false">
+          <span class="tts-toggle-icon">🔇</span>
+          <span class="tts-toggle-label">Read aloud</span>
+        </button>
+        <button class="cook-voice-toggle" id="cook-voice-toggle" onclick="App.toggleVoiceCommands()" aria-label="Voice commands" aria-pressed="false">
+          <span class="voice-toggle-icon">🎤</span>
+          <span class="voice-toggle-label">Voice</span>
+        </button>
+        <div class="cook-step-counter" id="cook-step-counter">Step 1 of 1</div>
+      </div>
+      <div class="cook-voice-indicator" id="cook-voice-indicator" hidden>
+        <span class="voice-indicator-dot"></span>
+        <span class="voice-indicator-label" id="voice-indicator-label">Listening...</span>
+        <span class="voice-indicator-cmd" id="voice-indicator-cmd"></span>
+      </div>
     </div>
     <div class="cook-timer-pills" id="cook-timer-pills"></div>
     <div class="cook-body" id="cook-body"></div>
@@ -375,7 +390,28 @@
     </div>
     <div class="screen-content">
       <h1 class="screen-title">My Cupboard</h1>
-      <p class="screen-sub">Tick what you have in your cupboard. We'll show what you can cook right now.</p>
+      <p class="screen-sub">Tick what you have, or snap a photo of your fridge.</p>
+
+      <!-- Photo capture area -->
+      <div class="pantry-photo-area" id="pantry-photo-area">
+        <input type="file" accept="image/*" capture="environment" id="pantry-photo-input"
+               onchange="App.handlePantryPhoto(event)" hidden>
+        <button class="btn-photo-capture" onclick="App.openPantryCamera()">
+          <span class="photo-camera-icon">📸</span>
+          <span class="photo-camera-label">Scan my fridge</span>
+        </button>
+        <div class="pantry-photo-preview" id="pantry-photo-preview" hidden>
+          <img id="pantry-photo-img" alt="Your fridge photo">
+          <button class="btn-photo-remove" onclick="App.clearPantryPhoto()" aria-label="Remove photo">✕</button>
+          <button class="btn-photo-retake" onclick="App.openPantryCamera()" aria-label="Retake photo">📸 Retake</button>
+        </div>
+      </div>
+
+      <!-- Quick match counter -->
+      <div id="pantry-match-bar" class="pantry-match-bar" hidden>
+        <span id="pantry-match-text"></span>
+      </div>
+
       <div id="pantry-items"></div>
     </div>
   </div>

@@ -37,6 +37,7 @@ Kitchen Calm is a mobile-first web app that helps adults with ADHD get dinner (o
 
 ### Cooking support
 - **Cook Mode** — Full-screen, one-step-at-a-time guided cooking. Progress bar at top. Previous step shown as context. Wakelock keeps screen on. Paywall triggers after 3 uses.
+- **Voice / Text-to-Speech (Cook Mode)** — Web Speech API integration in Cook Mode. A "🔇 Read aloud" toggle in the cook header turns auto-read on/off; when active it pulses green and shows "🔊 Reading". Each step also has a standalone "🔊 Listen" button for one-off reads. In auto-read mode every step advance triggers speech automatically. Smart voice selection picks the best available voice: Microsoft Ava Natural HD (Windows), Samantha (macOS/iOS), Google TTS (Android), Microsoft Zira, British English, then any English voice. Preferred voice is persisted to `kc_preferredVoice` in localStorage. `stopSpeaking()` is called on exit from Cook Mode, exit to home, and exit from Rescue Mode. Chrome's async voice loading is handled via `onvoiceschanged` + 600ms setTimeout fallback.
 - **Rescue Mode** — Ultra-minimal one-step view with 3–5-word rescue steps. Large text, zero visual noise. Accessible from the home screen and the recipe screen. Always free.
 - **Inline timers** — Auto-parsed from step text (detects "5 minutes", "2–3 min", "until golden"). Tap any timer pill to open a countdown sheet. Multiple simultaneous timers. Vibrate + audio chime + screen flash on completion.
 - **Interruption recovery** — "I got interrupted" button saves current meal to localStorage. A resume card appears on the home screen next visit.
@@ -152,6 +153,7 @@ HANDOVER.md                — This file
 | `kc_onboardingDone` | Flag — onboarding not shown again |
 | `kc_desktopBannerDismissed` | Flag — QR banner not shown again |
 | `kc_pantry_welcomed` | Flag — Cupboard welcome banner not shown again |
+| `kc_preferredVoice` | Name of the TTS voice last selected by the voice picker (persists across sessions) |
 
 ---
 
@@ -332,4 +334,26 @@ Key themes that have shaped development:
 
 ---
 
-*Last updated: 5 May 2026 (final). For questions contact info4rh@gmail.com.*
+---
+
+## Session Summary — 24 May 2026
+
+### Code changes shipped this session
+
+**Voice / Text-to-Speech in Cook Mode (`js/app.js`, `css/styles.css`, `index.html`)**
+- `state.ttsAutoRead` boolean added to app state
+- `_cachedVoices` array caches speech voices (Chrome loads them asynchronously)
+- `_loadPreferredVoice()` / `_savePreferredVoice(name)` — read/write `kc_preferredVoice` from localStorage
+- `toggleAutoRead()` — flips auto-read on/off, shows toast with active voice name, triggers immediate read if turning on
+- `_syncTTSToggle()` — keeps the header button icon and label in sync with state
+- `speakCurrentStep()` — reads the current cook step text aloud
+- `stopSpeaking()` — cancels any active speech; called on cook exit, home exit, rescue exit
+- `_speak(text)` — strips HTML tags, builds utterance, picks best voice, speaks at rate 0.92
+- `_pickBestVoiceName(voices)` — priority order: saved preference → Microsoft Ava Natural HD → Ava Natural/Online → any online/natural/premium → Samantha (macOS) → Google (Android) → Microsoft Zira → British English → en-US → any English → first available
+- `_pickBestVoice(utterance, voices)` — applies chosen voice to utterance and saves preference
+- Voice cache initialised at startup; `onvoiceschanged` + 600ms setTimeout handles Chrome's async load
+- "🔇 Read aloud / 🔊 Reading" toggle button added to cook header (`.cook-tts-toggle`)
+- "🔊 Listen" per-step button (`.btn-speak-step`) added inside each cook step card
+- New CSS: `.cook-controls` flex wrapper, `.cook-tts-toggle` with `.active` pulse animation (`ttsPulse`), `.btn-speak-step`
+
+*Last updated: 24 May 2026. For questions contact info4rh@gmail.com.*
