@@ -31,7 +31,8 @@ const App = (() => {
       steps:     [],
       stepIndex: 0
     },
-    ttsAutoRead: false
+    ttsAutoRead: false,
+    planner:            Array(7).fill(null)
   };
 
   let toastTimer    = null;
@@ -65,6 +66,7 @@ const App = (() => {
 
     if (screenId === 'pantry')   _renderPantry();
     if (screenId === 'shopping') _renderShopping();
+    if (screenId === 'planner')  _renderPlanner();
   }
 
   // ── WakeLock ─────────────────────────────────────────────────
@@ -1084,6 +1086,16 @@ const App = (() => {
     const cookBadge   = meal.cookTime != null ? `<span class="recipe-time-badge recipe-cook-badge">🍳 Cook ${meal.cookTime} min</span>` : `<span class="recipe-time-badge">⏱ ${meal.time} min</span>`;
     const servesBadge = meal.serves ? `<span class="recipe-time-badge recipe-serves-badge">👥 ${_servesLabel(meal.serves)}</span>` : '';
 
+    // Nutrition badges
+    var nut = _getNutrition(meal);
+    var nutritionHtml = `
+      <div class="recipe-nutrition-row">
+        <span class="nutrition-badge">🔥 ${nut.cal} cal</span>
+        <span class="nutrition-badge">💪 ${nut.protein}g protein</span>
+        <span class="nutrition-badge">🍚 ${nut.carbs}g carbs</span>
+        <span class="nutrition-badge">🧈 ${nut.fat}g fat</span>
+      </div>`;
+
     document.getElementById('recipe-content').innerHTML = `
       <div class="recipe-hero">
         <span class="recipe-emoji" aria-hidden="true">${meal.emoji}</span>
@@ -1092,6 +1104,7 @@ const App = (() => {
           ${prepBadge}${cookBadge}${servesBadge}
           ${recipeDietChips}
         </div>
+        ${nutritionHtml}
       </div>
 
       <button class="btn-start-cook" onclick="App.startCookMode()">
@@ -1716,13 +1729,14 @@ const App = (() => {
     };
 
     rec.onend = function() {
-      // Only auto-restart if continuous mode stopped unexpectedly
+      // Only restart if we intentionally want to keep listening
+      // Longer delay reduces beep frequency
       if (_voiceRecognition === rec) {
         setTimeout(function() {
           if (_voiceRecognition === rec) {
             try { rec.start(); } catch(_) {}
           }
-        }, 2000);
+        }, 5000);
       }
     };
 
@@ -1821,6 +1835,19 @@ const App = (() => {
         _renderCookStep();
         if (state.ttsAutoRead) speakCurrentStep();
       }
+      return;
+    }
+    // "cancel timer" / "remove timer" / "clear timer"
+    if (/\b(cancel|remove|clear)\s*(the)?\s*timer\b/.test(transcript)) {
+      if (_activeTimerId || _timers.length > 0) {
+        cancelActiveTimer();
+        _toast('Timer cancelled');
+      }
+      return;
+    }
+    // "home" / "exit" / "go back" / "finish"
+    if (/\b(home|exit|finish|go\s*back)\b/.test(transcript)) {
+      exitCookToHome();
       return;
     }
   }
@@ -2269,6 +2296,9 @@ const App = (() => {
       if (preview) preview.hidden = false;
       if (btn)     btn.style.display = 'none';
       if (img)     img.src = e.target.result;
+      // Highlight the pantry items area
+      var items = document.getElementById('pantry-items');
+      if (items) items.classList.add('photo-active');
       _updatePantryMatchBar();
     };
     reader.readAsDataURL(file);
@@ -2283,6 +2313,8 @@ const App = (() => {
     if (btn)     btn.style.display = '';
     var matchBar = document.getElementById('pantry-match-bar');
     if (matchBar) matchBar.hidden = true;
+    var items = document.getElementById('pantry-items');
+    if (items) items.classList.remove('photo-active');
   }
 
   function _updatePantryMatchBar() {
@@ -2319,9 +2351,9 @@ const App = (() => {
       bar.style.background = '#FFF8E8';
       bar.style.color = '#B07A10';
     } else {
-      text.textContent = '📸 Got the photo! Tick what\'s in your fridge 👆';
-      bar.style.background = 'var(--surface-2)';
-      bar.style.color = 'var(--text-2)';
+      text.textContent = '👆 Now tick the items you can see in your photo';
+      bar.style.background = 'var(--primary-light)';
+      bar.style.color = 'var(--primary-dark)';
     }
     bar.hidden = false;
   }
@@ -2390,6 +2422,261 @@ const App = (() => {
     _renderShopping();
     _toast('Cupboard updated!');
     _updatePantryMatchBar();
+  }
+
+  // ── Weekly Meal Planner ─────────────────────────────────────
+
+  const PLANNER_KEY = 'kc_planner';
+  const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  // Nutrition estimates by category (per serving, approximate)
+  var _nutritionEstimate = {
+    'chicken':      { cal: 420, protein: 35, carbs: 20, fat: 16 },
+    'lamb-beef':    { cal: 480, protein: 32, carbs: 18, fat: 22 },
+    'fish-seafood': { cal: 350, protein: 30, carbs: 15, fat: 12 },
+    'eggs':         { cal: 340, protein: 18, carbs: 22, fat: 16 },
+    'vegetarian':   { cal: 380, protein: 14, carbs: 48, fat: 14 },
+    'pasta-rice':   { cal: 460, protein: 16, carbs: 58, fat: 14 },
+    'soups-stews':  { cal: 320, protein: 20, carbs: 30, fat: 10 },
+    'breads':       { cal: 350, protein: 12, carbs: 42, fat: 14 },
+    '_default':     { cal: 400, protein: 20, carbs: 35, fat: 15 }
+  };
+
+  function _getNutrition(meal) {
+    if (meal.nutrition) return meal.nutrition;
+    var est = _nutritionEstimate[meal.category] || _nutritionEstimate._default;
+    // Scale by serving size if available
+    var scale = meal.serves ? Math.max(0.7, Math.min(1.5, 2 / meal.serves)) : 1;
+    return {
+      cal: Math.round(est.cal * scale),
+      protein: Math.round(est.protein * scale),
+      carbs: Math.round(est.carbs * scale),
+      fat: Math.round(est.fat * scale)
+    };
+  }
+
+  function _loadPlanner() {
+    try {
+      var raw = JSON.parse(localStorage.getItem(PLANNER_KEY));
+      if (Array.isArray(raw) && raw.length === 7) {
+        state.planner = raw;
+      }
+    } catch (_) {}
+  }
+
+  function _savePlanner() {
+    try { localStorage.setItem(PLANNER_KEY, JSON.stringify(state.planner)); } catch (_) {}
+  }
+
+  function _renderPlanner() {
+    var grid = document.getElementById('planner-grid');
+    if (!grid) return;
+
+    var hasAny = state.planner.some(function(d) { return d !== null; });
+    var shopBtn = document.getElementById('btn-planner-shopping');
+    var nutBtn  = document.getElementById('btn-planner-nutrition');
+    if (shopBtn) shopBtn.hidden = !hasAny;
+    if (nutBtn)  nutBtn.hidden  = !hasAny;
+
+    grid.innerHTML = state.planner.map(function(day, i) {
+      if (!day) {
+        return `
+          <div class="planner-day-row" onclick="App.pickPlannerDay(${i})">
+            <span class="planner-day-label">${DAYS[i]}</span>
+            <div class="planner-day-slot">
+              <span class="planner-day-empty">Tap to pick a meal</span>
+            </div>
+          </div>`;
+      }
+      var cls = 'planner-day-energy ' + day.energy;
+      var eLabel = day.energy === 'low' ? '🌙' : day.energy === 'high' ? '⚡' : '🌤';
+      return `
+        <div class="planner-day-row" onclick="App.pickPlannerDay(${i})">
+          <span class="planner-day-label">${DAYS[i]}</span>
+          <div class="planner-day-slot">
+            <span class="planner-day-emoji">${day.emoji}</span>
+            <span class="planner-day-name">${_escape(day.name)}</span>
+          </div>
+          <span class="${cls}">${eLabel}</span>
+          <button class="planner-day-clear" onclick="event.stopPropagation(); App.clearPlannerDay(${i})" aria-label="Remove">✕</button>
+        </div>`;
+    }).join('');
+  }
+
+  function pickPlannerDay(dayIndex) {
+    _showPlannerMealPicker(dayIndex);
+  }
+
+  function _showPlannerMealPicker(dayIndex) {
+    // Show a simple picker: 5 random meals from all energy levels
+    var all = [].concat(MEALS.low || [], MEALS.medium || [], MEALS.high || []);
+    var shuffled = all.sort(function() { return Math.random() - 0.5; });
+    var picks = shuffled.slice(0, 5);
+
+    var grid = document.getElementById('planner-grid');
+    if (!grid) return;
+
+    var html = `
+      <div class="planner-energy-picker">
+        <div class="planner-energy-picker-label">Pick a meal for ${DAYS[dayIndex]}</div>
+        <div class="planner-energy-btns">
+          <button class="btn-planner-en-low" onclick="App._fillPlannerDayEnergy(${dayIndex},'low')">
+            🌙<span>Low</span>
+          </button>
+          <button class="btn-planner-en-medium" onclick="App._fillPlannerDayEnergy(${dayIndex},'medium')">
+            🌤<span>Medium</span>
+          </button>
+          <button class="btn-planner-en-high" onclick="App._fillPlannerDayEnergy(${dayIndex},'high')">
+            ⚡<span>High</span>
+          </button>
+        </div>
+        <button class="btn-planner-en-cancel" onclick="App._renderPlanner()">Cancel</button>
+      </div>`;
+    grid.innerHTML = html;
+  }
+
+  function _fillPlannerDayEnergy(dayIndex, energy) {
+    var meals = (MEALS[energy] || []).filter(function(m) { return m.mealType === 'dinner'; });
+    if (!meals.length) meals = MEALS[energy] || [];
+    if (!meals.length) return;
+    var meal = meals[Math.floor(Math.random() * meals.length)];
+    state.planner[dayIndex] = {
+      id: meal.id, name: meal.name, emoji: meal.emoji,
+      energy: energy, mealType: meal.mealType
+    };
+    _savePlanner();
+    _renderPlanner();
+  }
+
+  function clearPlannerDay(dayIndex) {
+    state.planner[dayIndex] = null;
+    _savePlanner();
+    _renderPlanner();
+  }
+
+  function autoFillPlanner() {
+    // Show energy picker, then fill all 7 days
+    var grid = document.getElementById('planner-grid');
+    if (!grid) return;
+    grid.innerHTML = `
+      <div class="planner-energy-picker">
+        <div class="planner-energy-picker-label">How's your energy this week?</div>
+        <div class="planner-energy-btns">
+          <button class="btn-planner-en-low" onclick="App._doAutoFill('low')">
+            🌙<span>Low</span>
+          </button>
+          <button class="btn-planner-en-medium" onclick="App._doAutoFill('medium')">
+            🌤<span>Medium</span>
+          </button>
+          <button class="btn-planner-en-high" onclick="App._doAutoFill('high')">
+            ⚡<span>High</span>
+          </button>
+        </div>
+        <button class="btn-planner-en-cancel" onclick="App._renderPlanner()">Cancel</button>
+      </div>`;
+  }
+
+  function _doAutoFill(energy) {
+    var meals = (MEALS[energy] || []).filter(function(m) { return m.mealType === 'dinner'; });
+    if (!meals.length) meals = MEALS[energy] || [];
+    if (!meals.length) {
+      _toast('No meals available for this energy level');
+      _renderPlanner();
+      return;
+    }
+
+    var used = new Set();
+    for (var i = 0; i < 7; i++) {
+      // Try to pick a unique meal each day
+      var available = meals.filter(function(m) { return !used.has(m.id); });
+      if (!available.length) { used.clear(); available = meals; }
+      var meal = available[Math.floor(Math.random() * available.length)];
+      used.add(meal.id);
+      state.planner[i] = {
+        id: meal.id, name: meal.name, emoji: meal.emoji,
+        energy: energy, mealType: meal.mealType
+      };
+    }
+    _savePlanner();
+    _renderPlanner();
+    _toast('7 meals planned for the week! 🎉');
+  }
+
+  function generatePlannerShopping() {
+    var allIds = new Set();
+    state.planner.forEach(function(day) {
+      if (!day) return;
+      var meal = (MEALS[day.energy] || []).find(function(m) { return m.id === day.id; });
+      if (meal && meal.ingredientIds) {
+        meal.ingredientIds.forEach(function(id) { allIds.add(id); });
+      }
+    });
+
+    var owned = Pantry.getOwned();
+    var added = 0;
+    allIds.forEach(function(id) {
+      if (!owned.has(id)) {
+        var info = PANTRY_LOOKUP && PANTRY_LOOKUP[id];
+        if (info) {
+          Pantry.addMealToShoppingList({ ingredientIds: [id] });
+          added++;
+        }
+      }
+    });
+
+    if (added > 0) {
+      _toast('Added ' + added + ' item' + (added !== 1 ? 's' : '') + ' to shopping list');
+    } else {
+      _toast('You have everything you need! ✅');
+    }
+  }
+
+  function showNutritionSummary() {
+    var planned = state.planner.filter(function(d) { return d !== null; });
+    if (!planned.length) {
+      _toast('Plan some meals first to see nutrition');
+      return;
+    }
+
+    var total = { cal: 0, protein: 0, carbs: 0, fat: 0 };
+    planned.forEach(function(day) {
+      var meal = (MEALS[day.energy] || []).find(function(m) { return m.id === day.id; });
+      if (!meal) return;
+      var n = _getNutrition(meal);
+      total.cal += n.cal;
+      total.protein += n.protein;
+      total.carbs += n.carbs;
+      total.fat += n.fat;
+    });
+
+    var days = planned.length;
+    var grid = document.getElementById('planner-grid');
+    if (!grid) return;
+    grid.innerHTML = `
+      <div class="planner-nutrition-summary">
+        <h3 class="planner-nutrition-title">📊 Weekly Nutrition</h3>
+        <p class="planner-nutrition-sub">${days} meal${days !== 1 ? 's' : ''} planned · averages per meal</p>
+        <div class="planner-nutrition-row">
+          <div class="planner-nutrition-stat">
+            <span class="pns-value">${Math.round(total.cal / days)}</span>
+            <span class="pns-label">cal/meal</span>
+          </div>
+          <div class="planner-nutrition-stat">
+            <span class="pns-value">${Math.round(total.protein / days)}g</span>
+            <span class="pns-label">protein</span>
+          </div>
+          <div class="planner-nutrition-stat">
+            <span class="pns-value">${Math.round(total.carbs / days)}g</span>
+            <span class="pns-label">carbs</span>
+          </div>
+          <div class="planner-nutrition-stat">
+            <span class="pns-value">${Math.round(total.fat / days)}g</span>
+            <span class="pns-label">fat</span>
+          </div>
+        </div>
+        <p class="planner-nutrition-total">Weekly total: ${total.cal} cal · ${total.protein}g protein · ${total.carbs}g carbs</p>
+        <button class="btn-planner-en-cancel" onclick="App._renderPlanner()">← Back to plan</button>
+      </div>`;
   }
 
   // ── Feedback ─────────────────────────────────────────────────
@@ -2610,6 +2897,7 @@ const App = (() => {
   }
 
   Pantry.load();
+  _loadPlanner();
   _renderStreakBadge();
   _loadHistory();
   _loadInterrupted();
@@ -2639,6 +2927,8 @@ const App = (() => {
     togglePantry, addToShopping,
     openPantryCamera, handlePantryPhoto, clearPantryPhoto,
     toggleShopItem, removeShopItem, doneShopping,
+    pickPlannerDay, clearPlannerDay, autoFillPlanner, generatePlannerShopping, showNutritionSummary,
+    _fillPlannerDayEnergy, _doAutoFill, _renderPlanner,
     saveInterruption, resumeCooking, clearInterruption,
     dismissPantryWelcome,
     openFeedback, submitFeedback, toggleStar,

@@ -34,9 +34,9 @@
 
 ## 🟡 Tier 2 — Medium Build
 
-- [ ] **📅 Weekly Meal Planner** — 7-day grid, auto-fill by energy level, auto-generate shopping list
+- [x] **📅 Weekly Meal Planner** — 7-day grid, auto-fill by energy, generate shopping list
 - [ ] **⏰ Expiry Tracker** — "Use by" dates on pantry items, "These expire tomorrow" nudges
-- [ ] **🥗 Nutrition Snapshot** — Per-meal protein/calories/carbs, weekly gentle summary
+- [x] **🥗 Nutrition Snapshots** — Per-meal calories/protein/carbs/fat, weekly planner summary
 - [ ] **🔪 Prep-Ahead Mode** — Sunday batch-cooking guidance, visual prep timeline
 
 ## 🟢 Tier 3 — Differentiators

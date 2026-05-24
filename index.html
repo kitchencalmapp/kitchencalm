@@ -171,6 +171,9 @@
       <!-- SECTION 5: Always visible — bottom actions -->
       <div class="home-bottom">
         <div class="home-actions">
+          <button class="btn-secondary-action" onclick="App.go('planner')">
+            <span>📅</span> Weekly Plan
+          </button>
           <button class="btn-secondary-action" onclick="App.go('pantry')">
             <span>🫙</span> My Cupboard
           </button>
@@ -439,6 +442,33 @@
     </div>
     <div class="screen-content">
       <div id="history-screen-list" class="history-screen-list"></div>
+    </div>
+  </div>
+
+  <!-- PLANNER -->
+  <div id="screen-planner" class="screen">
+    <div class="screen-header">
+      <button class="back-btn" onclick="App.go('home')">← Back</button>
+    </div>
+    <div class="screen-content">
+      <div class="planner-intro">
+        <h1 class="screen-title">Weekly Meal Plan</h1>
+        <p class="screen-sub">Plan your week so you never have to decide what's for dinner.</p>
+      </div>
+
+      <div class="planner-actions">
+        <button class="btn-planner-autofill" onclick="App.autoFillPlanner()">
+          ⚡ Auto-fill by energy
+        </button>
+        <button class="btn-planner-shopping" id="btn-planner-shopping" onclick="App.generatePlannerShopping()" hidden>
+          🛒 Shopping list
+        </button>
+        <button class="btn-planner-nutrition" id="btn-planner-nutrition" onclick="App.showNutritionSummary()" hidden>
+          📊 Nutrition
+        </button>
+      </div>
+
+      <div id="planner-grid" class="planner-grid"></div>
     </div>
   </div>
 
