@@ -1716,9 +1716,13 @@ const App = (() => {
     };
 
     rec.onend = function() {
-      // Auto-restart if still active (not intentionally stopped)
+      // Only auto-restart if continuous mode stopped unexpectedly
       if (_voiceRecognition === rec) {
-        try { rec.start(); } catch(_) {}
+        setTimeout(function() {
+          if (_voiceRecognition === rec) {
+            try { rec.start(); } catch(_) {}
+          }
+        }, 2000);
       }
     };
 
@@ -1794,8 +1798,8 @@ const App = (() => {
     if (timerMatch) {
       var minutes = parseInt(timerMatch[1]);
       if (minutes > 0 && minutes <= 120) {
-        startStepTimer(state.cookMode.stepIndex, minutes * 60, minutes + ' min timer');
-        _toast('Timer set: ' + minutes + ' min');
+        startStepTimer(state.cookMode.stepIndex, minutes * 60, minutes + ' min timer', false);
+        _toast('Timer set: ' + minutes + ' min — tap the pill to open');
       }
       return;
     }
@@ -1846,7 +1850,8 @@ const App = (() => {
 
   // ── Timers ────────────────────────────────────────────────────
 
-  function startStepTimer(stepIndex, seconds, label) {
+  function startStepTimer(stepIndex, seconds, label, showSheet) {
+    if (showSheet === undefined) showSheet = true;
     const id    = ++_timerCounter;
     const timer = {
       id,
@@ -1858,8 +1863,10 @@ const App = (() => {
       intervalId: setInterval(() => _tickTimer(id), 1000)
     };
     _timers.push(timer);
-    _activeTimerId = id;
-    _showTimerSheet(id);
+    if (showSheet) {
+      _activeTimerId = id;
+      _showTimerSheet(id);
+    }
     _renderTimerPills();
   }
 
@@ -2242,7 +2249,6 @@ const App = (() => {
   function togglePantry(id) {
     Pantry.toggle(id);
     _renderPantry();
-    _updatePantryMatchBar();
   }
 
   // ── Photo Pantry ────────────────────────────────────────────
@@ -2285,46 +2291,37 @@ const App = (() => {
     if (!preview || preview.hidden) return;
 
     var owned = Pantry.getOwned();
-    if (owned.size === 0) return;
-
-    // Count how many meals are fully cookable with current pantry
-    var allMeals = [].concat(MEALS.low || [], MEALS.medium || [], MEALS.high || []);
-    var cookable = allMeals.filter(function(meal) {
-      return meal.ingredientIds && meal.ingredientIds.length > 0 &&
-        meal.ingredientIds.every(function(id) { return owned.has(id); });
-    });
-
-    var bar = document.getElementById('pantry-match-bar');
-    var text = document.getElementById('pantry-match-text');
+    var bar   = document.getElementById('pantry-match-bar');
+    var text  = document.getElementById('pantry-match-text');
     if (!bar || !text) return;
 
-    if (cookable.length === 0) {
-      // Show how many items away they are
-      var closest = null;
-      var closestMissing = Infinity;
-      allMeals.forEach(function(meal) {
-        if (!meal.ingredientIds) return;
-        var missing = meal.ingredientIds.filter(function(id) { return !owned.has(id); });
-        if (missing.length < closestMissing) {
-          closestMissing = missing.length;
-          closest = meal;
-        }
-      });
-      if (closest && closestMissing <= 3) {
-        text.textContent = '🛒 Almost! \u201c' + closest.name + '\u201d needs ' + closestMissing + ' more item' + (closestMissing !== 1 ? 's' : '');
-        bar.style.background = '#FFF8E8';
-        bar.style.color = '#B07A10';
-      } else {
-        text.textContent = '📸 Got the photo! Now tick what you see.';
-        bar.style.background = 'var(--surface-2)';
-        bar.style.color = 'var(--text-2)';
-        bar.hidden = false;
-        return;
+    // Count cookable and near-cookable meals
+    var allMeals = [].concat(MEALS.low || [], MEALS.medium || [], MEALS.high || []);
+    var cookable = 0;
+    var nearCookable = 0; // Meals missing 1-2 items
+
+    allMeals.forEach(function(meal) {
+      if (!meal.ingredientIds || !meal.ingredientIds.length) return;
+      var missing = meal.ingredientIds.filter(function(id) { return !owned.has(id); });
+      if (missing.length === 0) {
+        cookable++;
+      } else if (missing.length <= 2) {
+        nearCookable++;
       }
-    } else {
-      text.textContent = '✅ You can cook ' + cookable.length + ' meal' + (cookable.length !== 1 ? 's' : '') + ' with what you have!';
+    });
+
+    if (cookable > 0) {
+      text.textContent = '✅ You can cook ' + cookable + ' meal' + (cookable !== 1 ? 's' : '') + ' right now!';
       bar.style.background = 'var(--success-bg)';
       bar.style.color = 'var(--success)';
+    } else if (nearCookable > 0) {
+      text.textContent = '🛒 ' + nearCookable + ' meal' + (nearCookable !== 1 ? 's' : '') + ' within 2 items — tick what you see';
+      bar.style.background = '#FFF8E8';
+      bar.style.color = '#B07A10';
+    } else {
+      text.textContent = '📸 Got the photo! Tick what\'s in your fridge 👆';
+      bar.style.background = 'var(--surface-2)';
+      bar.style.color = 'var(--text-2)';
     }
     bar.hidden = false;
   }
